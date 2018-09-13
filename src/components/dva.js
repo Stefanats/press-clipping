@@ -1,7 +1,15 @@
-import React from 'react'
+import React from 'react';
+import Hoc from './hoc/hoc';
 
-export default () => (
-  <div>
-    dva
-  </div>
-)
+@Hoc
+class Dva extends React.Component {
+  render() {
+    return (
+      <div>
+          Dva
+      </div>
+    )
+  }
+}
+
+export default Dva;

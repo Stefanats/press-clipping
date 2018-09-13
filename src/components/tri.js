@@ -1,7 +1,15 @@
-import React from 'react'
+import React from 'react';
+import Hoc from './hoc/hoc';
 
-export default () => (
-    <div>
-      TRI
-    </div>
-  )
+@Hoc
+class Tri extends React.Component {
+  render() {
+    return (
+      <div>
+          Tri
+      </div>
+    )
+  }
+}
+
+export default Tri;
