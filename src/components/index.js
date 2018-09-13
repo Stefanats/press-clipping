@@ -5,14 +5,17 @@ import {
   Switch,
   BrowserRouter
 } from 'react-router-dom';
+import 'semantic-ui-css/semantic.min.css';
 
 import Jedan from './jedan';
 import Dva from './dva';
 import Tri from './tri';
+import Home from './Home.js'
 
 const Main = () => (
   <BrowserRouter>
     <Switch>
+      <Route path="/" component={Home} />
       <Route path="/jedan" component={Jedan} />
       <Route path="/dva" component={Dva} />
       <Route path="/tri" component={Tri} />
