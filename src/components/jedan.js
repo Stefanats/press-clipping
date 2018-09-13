@@ -1,7 +1,10 @@
-import React, { Component } from 'react'
+import React from 'react';
+import { connect } from 'react-redux';
+import Hoc from './hoc';
 
-export default class Jedan extends Component {
+class Jedan extends React.Component {
   render() {
+    let name = "stefan"
     return (
       <div>
           Jedan
@@ -10,3 +13,6 @@ export default class Jedan extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+})
+export default Hoc(Jedan)
