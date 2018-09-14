@@ -2,14 +2,14 @@ import React from 'react';
 import Hoc from './hoc/hoc';
 
 @Hoc
-class Jedan extends React.Component {
+class User extends React.Component {
   render() {
     return (
       <div>
-          Jedan
+          User
       </div>
     )
   }
 }
 
-export default Jedan;
+export default User;

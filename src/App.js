@@ -4,7 +4,7 @@ import { createStore } from 'redux';
 
 //components
 import Main from './components/index';
-import reducer from './reducers/count';
+import reducer from './reducers/index';
 
 class App extends Component {
   render () {
