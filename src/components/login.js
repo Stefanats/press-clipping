@@ -30,11 +30,6 @@ class Login extends Component {
       errors
     })
     if (Object.keys(errors).length === 0) {
-      const { name, password } = this.state.data
-      const login = {
-        name,
-        password
-      }
       if (this.state.data.name === "stefan") {
         if (this.state.data.password === "123") {
           window.sessionStorage.setItem("token", "true")

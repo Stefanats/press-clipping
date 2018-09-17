@@ -1,12 +1,14 @@
 import React from 'react';
 import Hoc from './hoc/hoc';
+import ArticleSearch from './user/articleSearch/index';
 
 @Hoc
+
 class User extends React.Component {
   render() {
     return (
-      <div>
-          User
+      <div style={{padding:"50px"}}>
+          <ArticleSearch />
       </div>
     )
   }
