@@ -15,7 +15,7 @@ class NavBar extends Component {
 	render() {
 		return (
 			<div>
-				<Menu style={{marginBottom: '0'}}>
+				<Menu style={{ marginBottom: '0' }}>
 					<h1>Press clipping</h1>
 					<Menu.Item position='right'>
 						{
@@ -26,10 +26,10 @@ class NavBar extends Component {
 					</Menu.Item>
 				</Menu>
 				<div>
-						{
-							this.props.children
-						}
-					</div>
+					{
+						this.props.children
+					}
+				</div>
 			</div>
 		)
 	}
