@@ -13,9 +13,11 @@ import Tri from './tri';
 import NavBar from './navBar';
 import Home from './home';
 import NotFound from './notFound';
+import CreateUser from './user/createCompanyAndUser/CreateUser';
+import CreateCompany from './user/createCompanyAndUser/CreateCompany';
 
 const AppRoute = ({ component: Component, layout: Layout, ...rest }) => (
-  
+
   <Route {...rest} render={props => (
     <Layout>
       <Component {...props} />
@@ -27,10 +29,12 @@ const Main = () => (
   <BrowserRouter>
     <Switch>
       <AppRoute layout={NavBar} exact path="/" component={Home} />
-      <AppRoute layout={NavBar} path="/user" component={User} />
-      <AppRoute layout={NavBar} path="/dva" component={Dva} />
-      <AppRoute layout={NavBar} path="/tri" component={Tri} />
-      <AppRoute layout={NavBar} component={NotFound} />
+      <AppRoute layout={NavBar} exact path="/user" component={User} />
+      <AppRoute layout={NavBar} exact path="/dva" component={Dva} />
+      <AppRoute layout={NavBar} exact path="/tri" component={Tri} />
+      {/* <AppRoute layout={NavBar} exact component={NotFound} /> */}
+      <AppRoute layout={NavBar} exact path="/createUser" component={CreateUser} />
+      <AppRoute layout={NavBar} exact path="/createCompany" component={CreateCompany} />
     </Switch>
   </BrowserRouter>
 )

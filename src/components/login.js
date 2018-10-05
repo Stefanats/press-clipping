@@ -24,24 +24,22 @@ class Login extends Component {
       }
     })
   }
+
+  
+
   handleSubmit = (e) => {
     const errors = this.validate(this.state.data);
     this.setState({
       errors
     })
     if (Object.keys(errors).length === 0) {
-      const { name, password } = this.state.data
-      const login = {
-        name,
-        password
-      }
       if (this.state.data.name === "stefan") {
         if (this.state.data.password === "123") {
           window.sessionStorage.setItem("token", "true")
           this.props.dispatch({ type: "LOGIN" })
           this.props.history.push("/user");
         } else {
-          this.setState({
+          this.setState({ 
             errors: {
               password: "Invalid"
             }
