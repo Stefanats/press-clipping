@@ -6,7 +6,6 @@ import {
   BrowserRouter
 } from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css';
-
 import User from './user';
 import Dva from './dva';
 import Tri from './tri';
@@ -15,6 +14,12 @@ import Home from './home';
 import NotFound from './notFound';
 import CreateUser from './user/createCompanyAndUser/CreateUser';
 import CreateCompany from './user/createCompanyAndUser/CreateCompany';
+import Companies from './edit/Companies';
+import EditCompany from './edit/EditCompany'
+import Edit from './edit/Edit'
+import ChooseCompany from './edit/ChooseCompany'
+import EditUser from './edit/EditUser'
+import EditSingleUser from './edit/EditSingleUser'
 
 const AppRoute = ({ component: Component, layout: Layout, ...rest }) => (
 
@@ -35,6 +40,12 @@ const Main = () => (
       {/* <AppRoute layout={NavBar} exact component={NotFound} /> */}
       <AppRoute layout={NavBar} exact path="/createUser" component={CreateUser} />
       <AppRoute layout={NavBar} exact path="/createCompany" component={CreateCompany} />
+      <AppRoute layout={NavBar} exact path="/edit" component={Edit} />
+      <AppRoute layout={NavBar} exact path="/edit/companies" component={Companies} />
+      <AppRoute layout={NavBar} exact path="/edit/companies/:id" component={EditCompany} />
+      <AppRoute layout={NavBar} exact path="/edit/choose_company" component={ChooseCompany} />
+      <AppRoute layout={NavBar} exact path="/edit/choose_company/:id" component={EditUser} />
+      <AppRoute layout={NavBar} exact path="/edit/choose_company/:id/:id" component={EditSingleUser} />
     </Switch>
   </BrowserRouter>
 )

@@ -3,9 +3,9 @@ import { Dropdown, Menu } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 const options = [
-  { key: 1, text: 'Svi', value: 1 },
-  { key: 2, text: 'Elektronski', value: 2 },
-  { key: 3, text: 'Štampani', value: 3 },
+  { key: 1, text: 'Svi', value: 'svi' },
+  { key: 2, text: 'Elektronski', value: 'elektronski' },
+  { key: 3, text: 'Štampani', value: 'stampani' }
 ]
 
 @connect(state => ({ proba: state.articleSearch }))
@@ -19,7 +19,7 @@ class PressType extends Component {
       pressType: 1
     })
   }
-  select = (e, {value}) => {
+  select = (e, { value }) => {
     this.props.dispatch({
       type: "SET_PRESSTYPE",
       pressType: value
@@ -28,11 +28,11 @@ class PressType extends Component {
   }
 
   render() {
-    const { value } = this.state
+    console.log('thisssssss :', this.state);
     return (
       <div>
         <Menu compact>
-          <Dropdown placeholder='Vrsta medija...' value={value} onChange={this.select} options={options} item selection />
+          <Dropdown name='medij' placeholder='Vrsta medija...' value={this.state.value} onChange={this.select} options={options} item selection />
         </Menu>
       </div>
     )

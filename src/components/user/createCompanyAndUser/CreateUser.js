@@ -1,14 +1,8 @@
 import React, { Component } from 'react'
 import Hoc from '../../hoc/hoc';
 import axios from 'axios';
-
+import sha256 from 'sha256'
 import { Input, Button, Dropdown } from 'semantic-ui-react';
-
-// const options = [
-// 	{ key: 1, text: 'One', value: 1 },
-// 	{ key: 2, text: 'Two', value: 2 },
-// 	{ key: 3, text: 'Three', value: 3 },
-// ]
 
 @Hoc
 class CreateUser extends Component {
@@ -18,11 +12,17 @@ class CreateUser extends Component {
 			usersArr: [],
 			user: '',
 			lastname: '',
-			options: [
-				{ key: 1, text: 'One', value: 1 },
-				{ key: 2, text: 'Two', value: 2 },
-				{ key: 3, text: 'Three', value: 3 },
-			]
+			email: '',
+			password: '',
+			options: [],
+			message: '',
+			errors: {
+				name: '',
+				lastname: '',
+				email: '',
+				password: '',
+				company: ''
+			}
 		}
 	}
 
@@ -47,8 +47,6 @@ class CreateUser extends Component {
 				})
 				this.setState({
 					options: arr
-				}, () => {
-					console.log('response', this.state.details);
 				})
 			})
 	}
@@ -62,30 +60,68 @@ class CreateUser extends Component {
 	handleChangeDrop = (e, { value }) => { this.setState({ value }) }
 
 	addUser(newUser) {
+		let api_key = 'dada';
 		console.log('newUser :', newUser);
 		axios.request({
 			method: 'post',
-			url: '',
+			url: `https://press-cliping.herokuapp.com/api/users?api_key=${api_key}`,
 			data: newUser
 		}).then(response => {
+			this.setState({
+				message: response.message
+			})
 			console.log('response :', response);
 		}).catch(err => console.log('err ', err));
 	}
 
 	pushUser = () => {
-		let users = this.state.usersArr;
-		users.push({
-			name: this.state.user,
-			lastname: this.state.lastname,
-			companyId: this.state.value
-		})
-		this.addUser(users);
+		const errors = this.validate(this.state.user, this.state.lastname, this.state.email, this.state.password, this.state.value)
 		this.setState({
-			user: '',
-			lastname: '',
-			value: ''
+			errors
 		})
+		if (Object.keys(errors).length === 0) {
+			let users = {}
+			users = {
+				name: this.state.user,
+				last_name: this.state.lastname,
+				email: this.state.email,
+				password: this.state.password,
+				company_id: this.state.value
+			}
+			// let users = this.state.usersArr;
+			// users.push({
+			// 	name: this.state.user,
+			// 	lastname: this.state.lastname,
+			// 	email: this.state.email,
+			// 	password: this.state.password,
+			// 	companyId: this.state.value
+			// })
+			this.addUser(users);
+			this.setState({
+				user: '',
+				lastname: '',
+				email: '',
+				password: '',
+				value: ''
+			})
+		} else {
+			this.setState({
+				errors
+			})
+		}
 	}
+
+	validate = (name, lastname, email, password, company) => {
+		const errors = {};
+		let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		if (!name) errors.name = "Obavezno polje!";
+		if (!lastname) errors.lastname = "Obavezno polje!";
+		if (!email || (!email.match(emailRegex))) errors.email = "Obavezan email format!";
+		if (!password) errors.password = "Obavezno polje!";
+		if (!company) errors.company = "Obavezno polje!";
+		return errors;
+	}
+
 	render() {
 		const { value, options } = this.state
 		console.log('this.state :', this.state);
@@ -95,10 +131,22 @@ class CreateUser extends Component {
 				<span>Name:</span>
 				<Input name='user' value={this.state.user} onChange={this.handleChange} />
 				<br />
+				<span>{this.state.errors.name}</span><br />
 				<span>Last name:</span>
 				<Input name='lastname' value={this.state.lastname} onChange={this.handleChange} />
 				<br />
+				<span>{this.state.errors.lastname}</span><br />
+				<span>Email:</span>
+				<Input type='email' name='email' value={this.state.email} onChange={this.handleChange} />
+				<br />
+				<span>{this.state.errors.email}</span><br />
+				<span>Password:</span>
+				<Input type='password' name='password' value={this.state.password} onChange={this.handleChange} />
+				<br />
+				<span>{this.state.errors.password}</span><br />
 				<Dropdown placeholder='Izaberi kompaniju' item selection options={options} onChange={this.handleChangeDrop} value={value} /><br />
+				<span>{this.state.errors.company}</span><br /><br />
+				<span>{this.state.message}</span>
 				<Button content='Create user' onClick={this.pushUser} />
 			</div>
 		)

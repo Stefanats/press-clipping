@@ -13,12 +13,11 @@ class CreateCompany extends Component {
 			keywords: [],
 			keyword: '',
 			id: 0,
-			details: []
+			message: '',
+			errors: {
+				name: ''
+			}
 		}
-	}
-
-	componentDidMount() {
-		this.addCompany()
 	}
 
 	handleChange = (e) => {
@@ -28,36 +27,67 @@ class CreateCompany extends Component {
 	}
 
 	addCompany = (newCompany) => {
-		console.log('newMeetup :', newCompany);
+		console.log('newCompany', newCompany);
+		let api_key = 'dada';
 		axios.request({
 			method: 'post',
-			url: '',
+			url: `https://press-cliping.herokuapp.com/api/companies?api_key=${api_key}`,
 			data: newCompany
 		}).then(response => {
 			console.log('response :', response);
-		}).catch(err => console.log('err ', err));
+			this.setState({
+				message: response.data.message
+			})
+		}).catch(response => console.log('err ', response));
 	}
 
 	pushItem = () => {
-		let companies = this.state.companyArr;
-		companies.push({
-			value: this.state.company,
-			key: this.state.id + 1,
-			text: this.state.company,
-			keywords: this.state.keywords
-		})
-		this.addCompany(companies);
+		// let companies = this.state.companyArr;
+		// companies.push({
+		// 	// id: this.state.id + 1,
+		// 	name: this.state.company,
+		// 	slug: this.state.company,
+		// 	keywords: this.state.keywords
+		// })
+		const errors = this.validate(this.state.company)
 		this.setState({
-			id: this.state.id + 1,
-			keywords: [],
-			keyword: '',
-			company: ''
+			errors
 		})
+		if (Object.keys(errors).length === 0) {
+			let companies = {}
+			companies = {
+				name: this.state.company,
+				slug: this.state.company,
+				keywords: this.state.keywords
+			}
+			this.addCompany(companies);
+			this.setState({
+				id: this.state.id + 1,
+				keywords: [],
+				keyword: '',
+				company: ''
+			})
+		} else {
+			this.setState({
+				errors
+			})
+		}
 	}
 
 	pushKeyword = () => {
 		let keywords = this.state.keywords;
-		keywords.push(this.state.keyword)
+		keywords.push(
+			this.state.keyword
+		)
+		this.setState({
+			keyword: ''
+		})
+	}
+
+	validate = (company) => {
+		const errors = {};
+		if (!company) errors.name = "Obavezno polje!";
+		return errors;
 	}
 
 	render() {
@@ -69,20 +99,22 @@ class CreateCompany extends Component {
 				</ul>
 			)
 		})
+		console.log('this.state :', this.state);
 		return (
 			<div>
 				<h2>Create Company</h2>
 				<span>Company name:</span>
 				<Input name='company' value={this.state.company} onChange={this.handleChange} /><br />
+				<span style={{ color: 'red' }}>{this.state.errors.name}</span><br />
 				<span>Company keywords:</span>
 				<Input name='keyword' value={this.state.keyword} onChange={this.handleChange} />
 				<Button content='+' onClick={this.pushKeyword} />
 				{
 					words
 				}
-				<br />
+				<br /><br />
+				<p>{this.state.message}</p>
 				<Button content='Create company' onClick={this.pushItem} />
-				<Button content='Req' onClick={this.addCompany} />
 
 			</div>
 		)

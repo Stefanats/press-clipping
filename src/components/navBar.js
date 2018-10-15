@@ -49,6 +49,15 @@ class NavBar extends Component {
 							Create User
 						</Link>
 					</Menu.Item>
+					<Menu.Item
+						name='edit'
+						active={activeItem === 'edit'}
+						onClick={this.handleItemClick}
+					>
+						<Link to='/edit'>
+							Edit
+						</Link>
+					</Menu.Item>
 					<Menu.Item position='right'>
 						{
 							this.props.login.login ?

@@ -3,9 +3,9 @@ import { Dropdown, Menu } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 const options = [
-	{ key: 1, text: 'Svi', value: 1 },
-	{ key: 2, text: 'Kurir', value: 2 },
-	{ key: 3, text: 'Blic', value: 3 },
+	{ key: 1, text: 'Svi', value: 'svi' },
+	{ key: 2, text: 'Novosti', value: 'novosti' },
+	{ key: 3, text: 'Sbb22', value: 'sbb22' },
 ]
 
 @connect(state => ({ proba: state.articleSearch }))

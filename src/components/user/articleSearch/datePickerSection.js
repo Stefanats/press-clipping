@@ -16,13 +16,13 @@ class DatePickerSection extends Component {
     };
   }
   componentDidMount = () => {
-    let date = moment().format("DD-MMM-YYYY")
+    let date = moment().format("YYYY-MM-DD")
     this.setState({
       date
     })
   }
   handleChange = (date) => {
-    let newDate = moment(date._d).format("DD-MMM-YYYY")
+    let newDate = moment(date._d).format("YYYY-MM-DD")
     this.setState({
       date: newDate
     })
