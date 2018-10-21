@@ -1,20 +1,22 @@
 const initialState = {
-  login: false
+  login: false,
 }
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case "LOGIN":
-      return {
-        login: true
-      }
+      return ({
+        login: true,
+        user: action.user
+      })
     case "LOGOUT":
       return {
         login: false
       }
     default: 
       return {
-        login: state.login
+        login: state.login,
+        user: state.user
       }
   }
 }

@@ -11,7 +11,7 @@ function Hoc (Component, props) {
     }
     componentDidMount() {
 
-      let token = window.sessionStorage.getItem("token")
+      let token = window.localStorage.getItem("token")
       if(token !== null) {
         this.setState({
           ulogovan: true

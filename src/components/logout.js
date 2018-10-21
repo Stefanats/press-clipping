@@ -7,13 +7,17 @@ import { withRouter } from 'react-router';
 
 class Logout extends Component {
   logout = () => {
-    window.sessionStorage.removeItem('token')
+    window.localStorage.removeItem('token')
     this.props.history.push('/')
     this.props.dispatch({ type: "LOGOUT" })
   }
   render() {
+    console.log('props iz logout :', this.props);
     return (
-      <Button onClick={this.logout} color='red' content='Logout' />
+      <div>
+        <Button onClick={this.logout} color='red' content='Logout' />
+        <div>Dobrodosli {this.props.login.user}</div>
+      </div>
     )
   }
 }

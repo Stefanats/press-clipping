@@ -37,12 +37,26 @@ export default class EditUser extends Component {
 				// })
 			})
 	}
+	onDelete = (id) => {
+		console.log('userId :', id);
+		let api_key = 'dada';
+		axios.request({
+			method: 'delete',
+			url: `https://press-cliping.herokuapp.com/api/users/${id}?api_key=${api_key}`,
+			data: id
+		}).then(response => {
+			this.setState({
+				message: response.data.message
+			})
+			console.log('responseUSer :', response);
+		}).catch(err => console.log('err ', err));
+	}
 	render() {
 		console.log('this.state :', this.state);
 		const { users } = this.state
 		const usersArr = users.map((user) => {
 			return (
-				<UserItem item={user} />
+				<UserItem item={user} onDelete={this.onDelete} />
 			)
 		})
 		return (

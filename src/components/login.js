@@ -16,7 +16,8 @@ class Login extends Component {
         password: ''
       },
       errors: {},
-      success: false
+      success: false,
+      name: ''
     }
   }
   handleChange = (e) => {
@@ -36,8 +37,11 @@ class Login extends Component {
       data: user
     }).then(response => {
       if (response.data.success === true) {
-        window.sessionStorage.setItem("token", JSON.stringify(response.data.user));
-        this.props.dispatch({ type: "LOGIN" });
+        window.localStorage.setItem("token", JSON.stringify(response.data.user));
+        this.props.dispatch({
+          type: "LOGIN",
+          user: response.data.user.name
+        });
         this.props.history.push("/user");
       } else {
         this.setState({

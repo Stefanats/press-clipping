@@ -12,9 +12,11 @@ class NavBar extends Component {
 
 	handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 	componentDidMount() {
-		let session = window.sessionStorage.getItem('token')
+		let session = window.localStorage.getItem('token')
+		session = JSON.parse(session)
 		!session ? this.setState({ token: true }) : this.setState({ token: false })
-		!session ? this.props.dispatch({ type: "LOGOUT" }) : this.props.dispatch({ type: "LOGIN" })
+		!session ? this.props.dispatch({ type: "LOGOUT" }) : this.props.dispatch({ type: "LOGIN", user: session.name })
+		console.log('session.name :', session);
 	}
 	render() {
 		const { activeItem } = this.state

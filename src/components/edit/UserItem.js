@@ -34,7 +34,9 @@ class CompanyItem extends Component {
 					<span> {this.state.item.last_name}</span>
 					<span> {this.state.item.email}</span>
 					<Link to={`/edit/choose_company/${this.state.item.company_id}/${this.state.item.id}`}> EDIT </Link>
-					{/* <Button onClick={this.onDelete} content='delete' /> */}
+					<Button
+						onClick={() => this.props.onDelete(this.state.item.id)}
+						content='delete' /><br />
 				</li>
 			</div>
 		)

@@ -68,7 +68,7 @@ class CreateUser extends Component {
 			data: newUser
 		}).then(response => {
 			this.setState({
-				message: response.message
+				message: response.data.message
 			})
 			console.log('response :', response);
 		}).catch(err => console.log('err ', err));
@@ -146,7 +146,7 @@ class CreateUser extends Component {
 				<span>{this.state.errors.password}</span><br />
 				<Dropdown placeholder='Izaberi kompaniju' item selection options={options} onChange={this.handleChangeDrop} value={value} /><br />
 				<span>{this.state.errors.company}</span><br /><br />
-				<span>{this.state.message}</span>
+				<span>{this.state.message}</span><br />
 				<Button content='Create user' onClick={this.pushUser} />
 			</div>
 		)

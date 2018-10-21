@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import DatePicker from './datePickerSection';
 import PressType from './pressType';
-import { Button } from 'semantic-ui-react';
+import { Button, GridColumn } from 'semantic-ui-react';
 import PressPublisher from './pressPublisher';
 import axios from 'axios';
 import Article from './Article'
+import { Grid, GridRow } from 'semantic-ui-react';
+
 
 @connect(state => ({ proba: state.articleSearch }))
 
@@ -13,14 +15,18 @@ class ArticlesSearch extends Component {
   constructor(props) {
     super();
     this.state = {
-      articles: []
+      articles: [],
+      date: [],
+      clanci: [],
+      printedArr: [],
+      digitalArr: []
     }
   }
   componentDidMount() {
     this.getToken()
   }
   getToken = () => {
-    let token = window.sessionStorage.getItem("token")
+    let token = window.localStorage.getItem("token")
     let tokenParse = JSON.parse(token)
     let company_id = tokenParse.company_id
     this.setState({
@@ -29,16 +35,54 @@ class ArticlesSearch extends Component {
   }
 
   getArticles(params) {
+    console.log('params :', params);
     let api_key = 'dada';
     axios.request({
       method: 'post',
       url: `https://press-cliping.herokuapp.com/api/media/search?api_key=${api_key}`,
       data: params
     }).then(response => {
-      this.setState({
-        articles: response.data.result
-      })
-      console.log('response :', response.data.result);
+      if (Array.isArray(response.data) === true) {
+        console.log('response.data :', response.data);
+        let arr = []
+        response.data.map((item) => {
+          return arr.push({
+            date: item.date,
+            articles: item.articles
+          })
+        })
+        this.setState({
+          clanci: arr,
+          printedArr: [],
+          digitalArr: []
+        })
+      }
+      else {
+        console.log('response.data :', response.data);
+        let printed = response.data.resultPrinted
+        let digital = response.data.resultDigital
+        let printedArr = []
+        let digitalArr = []
+        printed.map((item) => {
+          return printedArr.push({
+            date: item.date,
+            name: item.slug,
+            arr: item.articles
+          })
+        })
+        digital.map((item) => {
+          return digitalArr.push({
+            date: item.date,
+            name: item.slug,
+            arr: item.articles
+          })
+        })
+        this.setState({
+          printedArr: printedArr,
+          digitalArr: digitalArr,
+          clanci: []
+        })
+      }
     }).catch(err => console.log('err ', err));
   }
 
@@ -55,14 +99,53 @@ class ArticlesSearch extends Component {
   }
 
   render() {
-    const { articles } = this.state
-    let articlesArr = articles.map((article) => {
+    // const { articles } = this.state
+    // let articlesArr = articles.map((article) => {
+    //   return (
+    //     <Article text={article.text} link={article.link_src} slug={article.media_slug} time={article.updated_at} />
+    //   )
+    // })
+    console.log("IZ REDUXA", this.props.proba)
+    console.log('this.state.clanaka :', this.state);
+    let arr = this.state.clanci.map((item) => {
       return (
-        <Article text={article.text} link={article.link_src} />
+        <Grid style={{ marginTop: '50px' }}>
+          <div style={{ textAlign: 'center', margin: '0 auto', fontSize: '20px' }}>{item.date}</div><br />
+          <GridRow>
+            {
+              item.articles.map((article) => {
+                return (
+                  <Article text={article.text} link={article.link_src} slug={article.media_slug} time={article.updated_at} />
+                )
+              })
+            }
+          </GridRow>
+        </Grid>
       )
     })
-    console.log("IZ REDUXA", this.props.proba)
-    console.log('this.state :', this.state);
+    let digital = this.state.digitalArr.map((item) => {
+      return (
+        <Grid>
+          <div style={{ fontSize: '20px' }}>{item.name}</div>
+          <div style={{ fontSize: '18px' }}>{item.date}</div>
+          <GridRow centered>
+            <GridColumn computer={4}>
+              {
+                item.arr.map((item) => {
+                  return (
+                    <GridColumn>
+                      {/* <Article text={item.text} slug={item.media_slug} /> */}
+                      <span>{item.media_slug}</span>
+                      <span>{item.text}</span>
+                    </GridColumn>
+                  )
+                })
+              }
+            </GridColumn>
+          </GridRow>
+        </Grid>
+      )
+    })
     return (
       <div>
         <DatePicker text="Od" />
@@ -70,9 +153,14 @@ class ArticlesSearch extends Component {
         <PressType />
         <PressPublisher />
         <Button content='Send query' onClick={this.handleSubmit} />
+
         {
-          articlesArr
+          arr
         }
+        {
+          digital
+        }
+
       </div>
     )
   }

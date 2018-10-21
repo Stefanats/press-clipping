@@ -11,7 +11,8 @@ export default class EditCompany extends Component {
       addedKeywords: [],
       editedKeywords: [],
       keyword: '',
-      name: ''
+      name: '',
+      message: ''
     }
   }
   componentDidMount() {
@@ -70,7 +71,7 @@ export default class EditCompany extends Component {
       // data: companyId
     }).then(response => {
       this.setState({
-        message: response.message
+        message: response.data.message
       })
       console.log('response :', response);
     }).catch(err => console.log('err ', err));
@@ -111,6 +112,9 @@ export default class EditCompany extends Component {
       url: `https://press-cliping.herokuapp.com/api/companies/${company_id}?api_key=${api_key}`,
       data: editedCompany
     }).then(response => {
+      this.setState({
+        message: response.data.message
+      })
       console.log('response :', response);
     }).catch(response => console.log('err ', response));
   }
@@ -123,7 +127,7 @@ export default class EditCompany extends Component {
     }
     this.editCompany(editedCompany)
     console.log('editedCompany :', editedCompany);
-    console.log('typeOf() :', typeof(editedCompany));
+    console.log('typeOf() :', typeof (editedCompany));
   }
   render() {
     console.log('this.state :', this.state);
@@ -160,6 +164,7 @@ export default class EditCompany extends Component {
           words
         }
         <br />
+        <div>{this.state.message}</div><br />
         <Button color='red' content='Sacuvaj' onClick={this.edit} />
       </div>
     )
