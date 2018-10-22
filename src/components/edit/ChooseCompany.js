@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import CompanyItemChoose from './CompanyItemChoose'
+import Hoc from '../hoc/hoc'
 
+@Hoc
 export default class ChooseCompany extends Component {
 	constructor(props) {
 		super();

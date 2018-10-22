@@ -3,7 +3,7 @@ import axios from 'axios';
 import EditUserName from './editUser/EditUserName'
 import EditUserLastName from './editUser/EditUserLastName'
 import EditUserEmail from './editUser/EditUserEmail'
-import { Button } from 'semantic-ui-react';
+import { Button, Input } from 'semantic-ui-react';
 
 export default class EditSingleUser extends Component {
   constructor(props) {
@@ -77,9 +77,9 @@ export default class EditSingleUser extends Component {
         <span>Prezime: </span>
         <EditUserLastName name='lastName' value={this.state.lastName} handleChange={this.handleChange} /><br />
         <span>Email: </span>
-        <EditUserLastName name='email' value={this.state.email} handleChange={this.handleChange} /><br />
+        <EditUserEmail name='email' value={this.state.email} handleChange={this.handleChange} /><br />
         <span>Lozinka: </span>
-        <EditUserEmail name='password' value={this.state.password} handleChange={this.handleChange} /><br />
+        <Input name='password' value={this.state.password} onChange={this.handleChange} /><br />
         <Button onClick={this.edit} content='Izmeni' />
       </div>
     )

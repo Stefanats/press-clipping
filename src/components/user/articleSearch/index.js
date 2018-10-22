@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import DatePicker from './datePickerSection';
 import PressType from './pressType';
-import { Button, GridColumn } from 'semantic-ui-react';
+import { Button, GridColumn, TextArea, Grid, GridRow } from 'semantic-ui-react';
 import PressPublisher from './pressPublisher';
 import axios from 'axios';
 import Article from './Article'
-import { Grid, GridRow } from 'semantic-ui-react';
 
 
 @connect(state => ({ proba: state.articleSearch }))
@@ -125,23 +124,48 @@ class ArticlesSearch extends Component {
     })
     let digital = this.state.digitalArr.map((item) => {
       return (
-        <Grid>
-          <div style={{ fontSize: '20px' }}>{item.name}</div>
-          <div style={{ fontSize: '18px' }}>{item.date}</div>
+        <Grid textAlign='center' style={{ marginTop: '50px' }}>
+          <div style={{ fontSize: '20px', textAlign: 'center' }}>{item.name}</div>
+          <div style={{ fontSize: '18px', textAlign: 'center' }}>{item.date}</div>
           <GridRow centered>
-            <GridColumn computer={4}>
-              {
-                item.arr.map((item) => {
-                  return (
-                    <GridColumn>
-                      {/* <Article text={item.text} slug={item.media_slug} /> */}
-                      <span>{item.media_slug}</span>
-                      <span>{item.text}</span>
-                    </GridColumn>
-                  )
-                })
-              }
-            </GridColumn>
+            {
+              item.arr.map((item) => {
+                return (
+                  <GridColumn computer={4}>
+                    {/* <Article text={item.text} slug={item.media_slug} /> */}
+                    <div style={{ marginTop: '50px' }}>
+                      <a href={item.link_src} style={{ fontSize: '18px' }} target="_blank">Link</a>
+                      <div>{item.media_slug}</div>
+                      <div style={{ height: '100px', overflowY: 'scroll', border: '1px solid black' }}>{item.text}</div>
+                    </div>
+                  </GridColumn>
+                )
+              })
+            }
+          </GridRow>
+        </Grid>
+      )
+    })
+    let printed = this.state.printedArr.map((item) => {
+      return (
+        <Grid textAlign='center' style={{ marginTop: '50px' }}>
+          <div style={{ fontSize: '20px', textAlign: 'center' }}>{item.name}</div>
+          <div style={{ fontSize: '18px', textAlign: 'center' }}>{item.date}</div>
+          <GridRow centered>
+            {
+              item.arr.map((item) => {
+                return (
+                  <GridColumn computer={4}>
+                    {/* <Article text={item.text} slug={item.media_slug} /> */}
+                    <div style={{ marginTop: '50px' }}>
+                      <a href={item.link_src} style={{ fontSize: '18px' }} target="_blank">Link</a>
+                      <div>{item.media_slug}</div>
+                      <div style={{ height: '100px', overflowY: 'scroll', border: '1px solid black' }}>{item.text}</div>
+                    </div>
+                  </GridColumn>
+                )
+              })
+            }
           </GridRow>
         </Grid>
       )
@@ -153,14 +177,21 @@ class ArticlesSearch extends Component {
         <PressType />
         <PressPublisher />
         <Button content='Send query' onClick={this.handleSubmit} />
-
-        {
-          arr
-        }
-        {
-          digital
-        }
-
+        <div>
+          {
+            arr
+          }
+        </div>
+        <div>
+          {
+            digital
+          }
+        </div>
+        <div>
+          {
+            printed
+          }
+        </div>
       </div>
     )
   }
