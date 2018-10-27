@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux';
-import Login from './login';
-import Logout from './logout'
+import Login from '../login';
+import Logout from '../logout'
 import { Menu } from 'semantic-ui-react';
 
 @connect(state => ({ login: state.login }))
 
-class NavBar extends Component {
+class EditorNavBar extends Component {
 	state = {}
 
 	handleItemClick = (e, { name }) => this.setState({ activeItem: name })
@@ -16,7 +16,7 @@ class NavBar extends Component {
 		let user = window.localStorage.getItem('user')
 		user = JSON.parse(user)
 		!session ? this.setState({ token: true }) : this.setState({ token: false })
-		!session ? this.props.dispatch({ type: "LOGOUT" }) : this.props.dispatch({ type: "LOGIN", user: user.name, rola: user.role_name  })
+		!session ? this.props.dispatch({ type: "LOGOUT" }) : this.props.dispatch({ type: "LOGIN", user: user.name, rola: user.role_name })
 	}
 	render() {
 		const { activeItem } = this.state
@@ -29,35 +29,8 @@ class NavBar extends Component {
 						active={activeItem === 'userPage'}
 						onClick={this.handleItemClick}
 					>
-						<Link to='/admin'>
-							Home
-						</Link>
-					</Menu.Item>
-					<Menu.Item
-						name='company'
-						active={activeItem === 'company'}
-						onClick={this.handleItemClick}
-					>
-						<Link to='/createCompany'>
-							Create Company
-						</Link>
-					</Menu.Item>
-					<Menu.Item
-						name='user'
-						active={activeItem === 'user'}
-						onClick={this.handleItemClick}
-					>
-						<Link to='/createUser'>
-							Create User
-						</Link>
-					</Menu.Item>
-					<Menu.Item
-						name='edit'
-						active={activeItem === 'edit'}
-						onClick={this.handleItemClick}
-					>
-						<Link to='/edit'>
-							Edit
+						<Link to='/editor'>
+							Home Editor
 						</Link>
 					</Menu.Item>
 					<Menu.Item position='right'>
@@ -77,4 +50,4 @@ class NavBar extends Component {
 		)
 	}
 }
-export default NavBar;
+export default EditorNavBar;

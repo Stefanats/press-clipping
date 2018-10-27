@@ -4,12 +4,6 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 
 
-const options = [
-	{ key: 1, text: 'Svi', value: 'svi' },
-	{ key: 2, text: 'Novosti', value: 'novosti' },
-	{ key: 3, text: 'Sbb22', value: 'sbb22' },
-]
-
 @connect(state => ({ proba: state.articleSearch }))
 
 class PressPublisher extends Component {
@@ -34,7 +28,12 @@ class PressPublisher extends Component {
 			url: `https://press-cliping.herokuapp.com/api/media?api_key=${api_key}`,
 		})
 			.then(response => {
-				let arr = []
+				let arr = [{
+					key : 1000,
+					text : 'Svi',
+					value : 'svi'
+				}
+				]
 				response.data.media.map((item) => {
 					return arr.push({
 						key: item.id,

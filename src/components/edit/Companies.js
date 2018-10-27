@@ -2,8 +2,12 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import CompanyItem from './CompanyItem';
 import Hoc from '../hoc/hoc'
+import { connect } from 'react-redux';
+import {  Redirect } from 'react-router'
 
 @Hoc
+@connect(state => ({ login: state.login }))
+
 export default class Companies extends Component {
 	constructor(props) {
 		super();
@@ -51,10 +55,11 @@ export default class Companies extends Component {
 			)
 		})
 		return (
+			this.props.login.rola === 'admin' ?
 			<div>
 				{companies}
 				<div>{this.state.message}</div>
-			</div>
+			</div> : <Redirect to="/user" />
 		)
 	}
 }

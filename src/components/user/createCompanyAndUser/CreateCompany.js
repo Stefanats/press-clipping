@@ -2,8 +2,12 @@ import React, { Component } from 'react'
 import Hoc from '../../hoc/hoc';
 import axios from 'axios';
 import { Input, Button } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+import {  Redirect } from 'react-router'
 
 @Hoc
+@connect(state => ({ login: state.login }))
+
 class CreateCompany extends Component {
 	constructor(props) {
 		super(props);
@@ -101,6 +105,7 @@ class CreateCompany extends Component {
 		})
 		console.log('this.state :', this.state);
 		return (
+			this.props.login.rola === 'admin' ?
 			<div>
 				<h2>Create Company</h2>
 				<span>Company name:</span>
@@ -116,7 +121,7 @@ class CreateCompany extends Component {
 				<p>{this.state.message}</p>
 				<Button content='Create company' onClick={this.pushItem} />
 
-			</div>
+			</div> : <Redirect to="/user" />
 		)
 	}
 }

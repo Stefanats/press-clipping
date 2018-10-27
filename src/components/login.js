@@ -37,12 +37,39 @@ class Login extends Component {
       data: user
     }).then(response => {
       if (response.data.success === true) {
-        window.localStorage.setItem("token", JSON.stringify(response.data.user));
-        this.props.dispatch({
-          type: "LOGIN",
-          user: response.data.user.name
-        });
-        this.props.history.push("/user");
+        console.log('response.datablblblb :', response.data);
+        window.localStorage.setItem("token", response.data.access_token);
+        let tokenIzStorage = window.localStorage.getItem('token')
+        let token = {
+          token: tokenIzStorage
+        }
+        axios.request({
+          method: 'post',
+          url: `https://press-cliping.herokuapp.com/api/me?api_key=${api_key}`,
+          data: token
+        }).then(response => {
+          console.log('responseUser :', response.data);
+          let a = response.data
+          window.localStorage.setItem('user', JSON.stringify(a))
+          this.props.dispatch({
+            type: "LOGIN",
+            user: response.data.name,
+            rola: response.data.role_name,
+            id: response.data.id
+          });
+          if(response.data.role_name === 'admin'){
+            this.props.history.push("/admin");
+          }
+          if(response.data.role_name === 'editor'){
+            this.props.history.push("/editor");
+          }
+          if(response.data.role_name === 'operator'){
+            this.props.history.push("/operator");
+          }
+          if(response.data.role_name === 'korisnik'){
+            this.props.history.push("/user");
+          }
+        }).catch(error => console.log('responsEror:', error.response))
       } else {
         this.setState({
           errors: {

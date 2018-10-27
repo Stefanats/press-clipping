@@ -16,7 +16,7 @@ class NavBar extends Component {
 		let user = window.localStorage.getItem('user')
 		user = JSON.parse(user)
 		!session ? this.setState({ token: true }) : this.setState({ token: false })
-		!session ? this.props.dispatch({ type: "LOGOUT" }) : this.props.dispatch({ type: "LOGIN", user: user.name, rola: user.role_name  })
+		!session ? this.props.dispatch({ type: "LOGOUT" }) : this.props.dispatch({ type: "LOGIN", user: user.name, rola: user.role_name })
 	}
 	render() {
 		const { activeItem } = this.state
@@ -24,42 +24,7 @@ class NavBar extends Component {
 			<div>
 				<Menu style={{ marginBottom: '0' }}>
 					<h1>Press clipping</h1>
-					<Menu.Item
-						name='userPage'
-						active={activeItem === 'userPage'}
-						onClick={this.handleItemClick}
-					>
-						<Link to='/admin'>
-							Home
-						</Link>
-					</Menu.Item>
-					<Menu.Item
-						name='company'
-						active={activeItem === 'company'}
-						onClick={this.handleItemClick}
-					>
-						<Link to='/createCompany'>
-							Create Company
-						</Link>
-					</Menu.Item>
-					<Menu.Item
-						name='user'
-						active={activeItem === 'user'}
-						onClick={this.handleItemClick}
-					>
-						<Link to='/createUser'>
-							Create User
-						</Link>
-					</Menu.Item>
-					<Menu.Item
-						name='edit'
-						active={activeItem === 'edit'}
-						onClick={this.handleItemClick}
-					>
-						<Link to='/edit'>
-							Edit
-						</Link>
-					</Menu.Item>
+					
 					<Menu.Item position='right'>
 						{
 							this.props.login.login ?

@@ -7,19 +7,19 @@ import {  Redirect } from 'react-router'
 @Hoc
 @connect(state => ({ login: state.login }))
 
-class User extends React.Component {
+class Admin extends React.Component {
   render() {
     return (
-      this.props.login.rola === 'korisnik' ?
-      <div style={{padding:"50px"}}>
-      User
+      this.props.login.rola === 'admin' ?
+      <div style={{ padding: "50px" }}>
+        Admin
           <ArticleSearch />
       </div> : 
       this.props.login.rola === 'editor' ? <Redirect to="/editor" /> : 
-      this.props.login.rola === 'admin' ? <Redirect to="/admin" /> : 
+      this.props.login.rola === 'korisnik' ? <Redirect to="/user" /> : 
       <Redirect to="/operator" />
     )
   }
 }
 
-export default User;
+export default Admin;

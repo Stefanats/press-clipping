@@ -8,6 +8,7 @@ import { withRouter } from 'react-router';
 class Logout extends Component {
   logout = () => {
     window.localStorage.removeItem('token')
+    window.localStorage.removeItem('user')
     this.props.history.push('/')
     this.props.dispatch({ type: "LOGOUT" })
   }

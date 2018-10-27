@@ -7,16 +7,20 @@ const reducer = (state = initialState, action) => {
     case "LOGIN":
       return ({
         login: true,
-        user: action.user
+        user: action.user,
+        rola: action.rola,
+        id: action.id
       })
     case "LOGOUT":
       return {
         login: false
       }
-    default: 
+    default:
       return {
         login: state.login,
-        user: state.user
+        user: state.user,
+        rola: state.rola,
+        id: state.id
       }
   }
 }

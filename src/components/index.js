@@ -7,9 +7,14 @@ import {
 } from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css';
 import User from './user';
-import Dva from './dva';
-import Tri from './tri';
+import Admin from './Admin';
+import Editor from './Editor';
+import Operator from './Operator';
 import NavBar from './navBar';
+import UserNavBar from './user/UserNavBar';
+import EditorNavBar from './editor/EditorNavBar';
+import OperatorNavBar from './operator/OperatorNavBar';
+import HomeNavBar from './HomeNavBar'
 import Home from './home';
 import NotFound from './notFound';
 import CreateUser from './user/createCompanyAndUser/CreateUser';
@@ -33,11 +38,11 @@ const AppRoute = ({ component: Component, layout: Layout, ...rest }) => (
 const Main = () => (
   <BrowserRouter>
     <Switch>
-      <AppRoute layout={NavBar} exact path="/" component={Home} />
-      <AppRoute layout={NavBar} exact path="/user" component={User} />
-      <AppRoute layout={NavBar} exact path="/dva" component={Dva} />
-      <AppRoute layout={NavBar} exact path="/tri" component={Tri} />
-      {/* <AppRoute layout={NavBar} exact component={NotFound} /> */}
+      <AppRoute layout={HomeNavBar} exact path="/" component={Home} />
+      <AppRoute layout={UserNavBar} exact path="/user" component={User} />
+      <AppRoute layout={NavBar} exact path="/admin" component={Admin} />
+      <AppRoute layout={EditorNavBar} exact path="/editor" component={Editor} />
+      <AppRoute layout={OperatorNavBar} exact path="/operator" component={Operator} />
       <AppRoute layout={NavBar} exact path="/createUser" component={CreateUser} />
       <AppRoute layout={NavBar} exact path="/createCompany" component={CreateCompany} />
       <AppRoute layout={NavBar} exact path="/edit" component={Edit} />
@@ -46,6 +51,7 @@ const Main = () => (
       <AppRoute layout={NavBar} exact path="/edit/choose_company" component={ChooseCompany} />
       <AppRoute layout={NavBar} exact path="/edit/choose_company/:id" component={EditUser} />
       <AppRoute layout={NavBar} exact path="/edit/choose_company/:id/:id" component={EditSingleUser} />
+      <AppRoute layout={NavBar} exact component={NotFound} />
     </Switch>
   </BrowserRouter>
 )

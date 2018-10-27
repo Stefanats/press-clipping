@@ -3,7 +3,20 @@ import axios from 'axios';
 import EditUserName from './editUser/EditUserName'
 import EditUserLastName from './editUser/EditUserLastName'
 import EditUserEmail from './editUser/EditUserEmail'
-import { Button, Input } from 'semantic-ui-react';
+import { Button, Input, Dropdown } from 'semantic-ui-react';
+
+let roles = [{
+  key: 1, text: 'Admin', value: 1
+},
+{
+  key: 11, text: 'Editor', value: 11
+},
+{
+  key: 21, text: 'Operator', value: 21
+},
+{
+  key: 31, text: 'Korisnik', value: 31
+}]
 
 export default class EditSingleUser extends Component {
   constructor(props) {
@@ -12,7 +25,9 @@ export default class EditSingleUser extends Component {
       name: '',
       lastName: '',
       email: '',
-      password: ''
+      newEmail: '',
+      password: '',
+      role: ''
     }
   }
   componentDidMount() {
@@ -23,6 +38,7 @@ export default class EditSingleUser extends Component {
       [e.target.name]: e.target.value
     })
   }
+  handleChangeDropRole = (e, { value }) => { this.setState({ role: value }) }
   getUser = () => {
     let api_key = 'dada';
     let user_id = this.props.match.params.id;
@@ -34,7 +50,9 @@ export default class EditSingleUser extends Component {
         this.setState({
           name: response.data.user.name,
           lastName: response.data.user.last_name,
-          email: response.data.user.email
+          email: response.data.user.email,
+          newEmail: response.data.user.email,
+          role: response.data.user.role_id
         })
         console.log('responseSingleUser :', response);
       })
@@ -57,12 +75,22 @@ export default class EditSingleUser extends Component {
   }
   edit = () => {
     let editedUser = {}
-    editedUser = {
-      name: this.state.name,
-      last_name: this.state.lastName,
-      email: this.state.email,
-      password: this.state.password
+    if (this.state.password !== '' || this.state.email !== this.state.newEmail) {
+      editedUser = {
+        name: this.state.name,
+        last_name: this.state.lastName,
+        email: this.state.newEmail,
+        password: this.state.password,
+        role_id: this.state.role
+      }
+    } else {
+      editedUser = {
+        name: this.state.name,
+        last_name: this.state.lastName,
+        role_id: this.state.role
+      }
     }
+
     this.editUser(editedUser)
   }
   render() {
@@ -77,9 +105,11 @@ export default class EditSingleUser extends Component {
         <span>Prezime: </span>
         <EditUserLastName name='lastName' value={this.state.lastName} handleChange={this.handleChange} /><br />
         <span>Email: </span>
-        <EditUserEmail name='email' value={this.state.email} handleChange={this.handleChange} /><br />
+        <EditUserEmail name='newEmail' value={this.state.newEmail} handleChange={this.handleChange} /><br />
         <span>Lozinka: </span>
         <Input name='password' value={this.state.password} onChange={this.handleChange} /><br />
+        <span>Rola: </span>
+        <Dropdown placeholder={this.state.role} item selection options={roles} onChange={this.handleChangeDropRole} value={this.state.role} /><br />
         <Button onClick={this.edit} content='Izmeni' />
       </div>
     )

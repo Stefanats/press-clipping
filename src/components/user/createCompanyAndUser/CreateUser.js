@@ -1,10 +1,26 @@
 import React, { Component } from 'react'
 import Hoc from '../../hoc/hoc';
 import axios from 'axios';
-import sha256 from 'sha256'
 import { Input, Button, Dropdown } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+import {  Redirect } from 'react-router'
+
+let roles = [{
+	key: 1, text: 'Admin', value: 1
+},
+{
+	key: 11, text: 'Editor', value: 11
+},
+{
+	key: 21, text: 'Operator', value: 21
+},
+{
+	key: 31, text: 'Guest', value: 31
+}]
 
 @Hoc
+@connect(state => ({ login: state.login }))
+
 class CreateUser extends Component {
 	constructor(props) {
 		super(props);
@@ -16,6 +32,8 @@ class CreateUser extends Component {
 			password: '',
 			options: [],
 			message: '',
+			role: '',
+			companyId: '',
 			errors: {
 				name: '',
 				lastname: '',
@@ -57,7 +75,8 @@ class CreateUser extends Component {
 		})
 	}
 
-	handleChangeDrop = (e, { value }) => { this.setState({ value }) }
+	handleChangeDrop = (e, { value }) => { this.setState({ companyId: value }) }
+	handleChangeDropRole = (e, { value }) => { this.setState({ role: value }) }
 
 	addUser(newUser) {
 		let api_key = 'dada';
@@ -75,7 +94,7 @@ class CreateUser extends Component {
 	}
 
 	pushUser = () => {
-		const errors = this.validate(this.state.user, this.state.lastname, this.state.email, this.state.password, this.state.value)
+		const errors = this.validate(this.state.user, this.state.lastname, this.state.email, this.state.password, this.state.companyId,this.state.role)
 		this.setState({
 			errors
 		})
@@ -86,7 +105,8 @@ class CreateUser extends Component {
 				last_name: this.state.lastname,
 				email: this.state.email,
 				password: this.state.password,
-				company_id: this.state.value
+				company_id: this.state.companyId,
+				role_id: this.state.role
 			}
 			// let users = this.state.usersArr;
 			// users.push({
@@ -102,7 +122,8 @@ class CreateUser extends Component {
 				lastname: '',
 				email: '',
 				password: '',
-				value: ''
+				companyId: '',
+				role:''
 			})
 		} else {
 			this.setState({
@@ -111,7 +132,7 @@ class CreateUser extends Component {
 		}
 	}
 
-	validate = (name, lastname, email, password, company) => {
+	validate = (name, lastname, email, password, company, role) => {
 		const errors = {};
 		let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		if (!name) errors.name = "Obavezno polje!";
@@ -119,13 +140,15 @@ class CreateUser extends Component {
 		if (!email || (!email.match(emailRegex))) errors.email = "Obavezan email format!";
 		if (!password) errors.password = "Obavezno polje!";
 		if (!company) errors.company = "Obavezno polje!";
+		if (!role) errors.role = "Obavezno polje!";		
 		return errors;
 	}
 
 	render() {
-		const { value, options } = this.state
+		const { companyId, options, role } = this.state
 		console.log('this.state :', this.state);
 		return (
+			this.props.login.rola === 'admin' ?
 			<div>
 				<h2>Create User:</h2>
 				<span>Name:</span>
@@ -144,12 +167,16 @@ class CreateUser extends Component {
 				<Input type='password' name='password' value={this.state.password} onChange={this.handleChange} />
 				<br />
 				<span>{this.state.errors.password}</span><br />
-				<Dropdown placeholder='Izaberi kompaniju' item selection options={options} onChange={this.handleChangeDrop} value={value} /><br />
-				<span>{this.state.errors.company}</span><br /><br />
+				<span>Kompanija:</span>
+				<Dropdown placeholder='Izaberi kompaniju' item selection options={options} onChange={this.handleChangeDrop} value={companyId} /><br />
+				<span>{this.state.errors.company}</span><br />
+				<span>Rola:</span>
+				<Dropdown placeholder='Izaberi rolu' item selection options={roles} onChange={this.handleChangeDropRole} value={role} /><br />
+				<span>{this.state.errors.role}</span><br /><br />
 				<span>{this.state.message}</span><br />
 				<Button content='Create user' onClick={this.pushUser} />
-			</div>
-		)
+			</div> : <Redirect to="/user" />
+		) 
 	}
 }
 

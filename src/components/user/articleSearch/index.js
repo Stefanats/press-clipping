@@ -8,7 +8,7 @@ import axios from 'axios';
 import Article from './Article'
 
 
-@connect(state => ({ proba: state.articleSearch }))
+@connect(state => ({ proba: state.articleSearch, login: state.login }))
 
 class ArticlesSearch extends Component {
   constructor(props) {
@@ -25,7 +25,7 @@ class ArticlesSearch extends Component {
     this.getToken()
   }
   getToken = () => {
-    let token = window.localStorage.getItem("token")
+    let token = window.localStorage.getItem("user")
     let tokenParse = JSON.parse(token)
     let company_id = tokenParse.company_id
     this.setState({
@@ -42,7 +42,7 @@ class ArticlesSearch extends Component {
       data: params
     }).then(response => {
       if (Array.isArray(response.data) === true) {
-        console.log('response.data :', response.data);
+        console.log('response.niz :', response.data);
         let arr = []
         response.data.map((item) => {
           return arr.push({
@@ -57,22 +57,22 @@ class ArticlesSearch extends Component {
         })
       }
       else {
-        console.log('response.data :', response.data);
-        let printed = response.data.resultPrinted
-        let digital = response.data.resultDigital
+        console.log('response.obj :', response.data);
+        let printed = response.data.printed
+        let digital = response.data.digitals
         let printedArr = []
         let digitalArr = []
         printed.map((item) => {
           return printedArr.push({
             date: item.date,
-            name: item.slug,
+            // name: item.slug,
             arr: item.articles
           })
         })
         digital.map((item) => {
           return digitalArr.push({
             date: item.date,
-            name: item.slug,
+            // name: item.slug,
             arr: item.articles
           })
         })
@@ -89,9 +89,10 @@ class ArticlesSearch extends Component {
     let obj = {}
     obj = {
       period: this.props.proba.period,
-      company_id: this.state.company_id,
+      // company_id: this.state.company_id,
       publisher: this.props.proba.publisher,
-      pressType: this.props.proba.pressType
+      pressType: this.props.proba.pressType,
+      role_id: this.props.login.rola
     }
     this.getArticles(obj)
     console.log('obj :', obj);
@@ -125,7 +126,7 @@ class ArticlesSearch extends Component {
     let digital = this.state.digitalArr.map((item) => {
       return (
         <Grid textAlign='center' style={{ marginTop: '50px' }}>
-          <div style={{ fontSize: '20px', textAlign: 'center' }}>{item.name}</div>
+          {/* <div style={{ fontSize: '20px', textAlign: 'center' }}>{item.name}</div> */}
           <div style={{ fontSize: '18px', textAlign: 'center' }}>{item.date}</div>
           <GridRow centered>
             {
@@ -149,7 +150,7 @@ class ArticlesSearch extends Component {
     let printed = this.state.printedArr.map((item) => {
       return (
         <Grid textAlign='center' style={{ marginTop: '50px' }}>
-          <div style={{ fontSize: '20px', textAlign: 'center' }}>{item.name}</div>
+          {/* <div style={{ fontSize: '20px', textAlign: 'center' }}>{item.name}</div> */}
           <div style={{ fontSize: '18px', textAlign: 'center' }}>{item.date}</div>
           <GridRow centered>
             {
@@ -170,6 +171,8 @@ class ArticlesSearch extends Component {
         </Grid>
       )
     })
+    console.log('this.state.clanaka :', this.state);
+
     return (
       <div>
         <DatePicker text="Od" />
