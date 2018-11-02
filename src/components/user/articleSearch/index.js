@@ -89,10 +89,11 @@ class ArticlesSearch extends Component {
     let obj = {}
     obj = {
       period: this.props.proba.period,
-      // company_id: this.state.company_id,
+      company_id: this.state.company_id,
       publisher: this.props.proba.publisher,
       pressType: this.props.proba.pressType,
-      role_id: this.props.login.rola
+      role_name: this.props.login.rola,
+      id: this.props.login.id
     }
     this.getArticles(obj)
     console.log('obj :', obj);

@@ -15,7 +15,7 @@ let roles = [{
 	key: 21, text: 'Operator', value: 21
 },
 {
-	key: 31, text: 'Guest', value: 31
+	key: 31, text: 'Korisnik', value: 31
 }]
 
 @Hoc
@@ -106,7 +106,9 @@ class CreateUser extends Component {
 				email: this.state.email,
 				password: this.state.password,
 				company_id: this.state.companyId,
-				role_id: this.state.role
+				role_id: this.state.role,
+				role_name: this.props.login.rola,
+				id: this.props.login.id
 			}
 			// let users = this.state.usersArr;
 			// users.push({

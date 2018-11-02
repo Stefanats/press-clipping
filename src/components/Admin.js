@@ -9,6 +9,7 @@ import {  Redirect } from 'react-router'
 
 class Admin extends React.Component {
   render() {
+    console.log('this.props :', this.props);
     return (
       this.props.login.rola === 'admin' ?
       <div style={{ padding: "50px" }}>

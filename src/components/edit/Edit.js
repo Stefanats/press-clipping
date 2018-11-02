@@ -11,7 +11,7 @@ import {  Redirect } from 'react-router'
 export default class Edit extends Component {
   
   render() {
-    console.log('this.props :', this.props.login.rola);
+    console.log('this.propsaaaaaaaaaad :', this.props.login.rola);
 
     return (
       this.props.login.rola === 'admin' ?

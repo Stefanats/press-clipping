@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import { Input, Button } from 'semantic-ui-react'
 import axios from 'axios';
+import { connect } from 'react-redux';
+
+@connect(state => ({ login: state.login }))
 
 export default class EditCompany extends Component {
   constructor(props) {
@@ -20,10 +23,17 @@ export default class EditCompany extends Component {
   }
   getCompany = () => {
     let api_key = 'dada';
-    let company_id = this.props.match.params.id;
+    let obj = {}
+    obj = {
+      company_id: this.props.match.params.id,
+      id: this.props.login.id,
+      role_name: this.props.login.rola
+    }
+    console.log('obj :', obj);
     axios({
-      method: 'get',
-      url: `https://press-cliping.herokuapp.com/api/companies/${company_id}?api_key=${api_key}`,
+      method: 'post',
+      url: `https://press-cliping.herokuapp.com/api/companiesGetOne?api_key=${api_key}`,
+      data: obj
     })
       .then(response => {
         let arr = []
@@ -40,6 +50,7 @@ export default class EditCompany extends Component {
         })
       })
   }
+
   handleChange = (e) => {
     this.setState({
       [e.target.name]: e.target.value
@@ -58,6 +69,11 @@ export default class EditCompany extends Component {
   }
   onDelete = (id) => {
     let keywords = this.state.keywords
+    let obj = {
+      id: this.props.login.id,
+      role_name: this.props.login.rola,
+      keyword_id: id
+    }
     const filteredKeywords = keywords.filter(keyword => {
       return keyword.id !== id;
     })
@@ -66,9 +82,9 @@ export default class EditCompany extends Component {
     })
     let api_key = 'dada';
     axios.request({
-      method: 'delete',
-      url: `https://press-cliping.herokuapp.com/api/keywords/${id}?api_key=${api_key}`,
-      // data: companyId
+      method: 'post',
+      url: `https://press-cliping.herokuapp.com/api/keywordDelete?api_key=${api_key}`,
+      data: obj
     }).then(response => {
       this.setState({
         message: response.data.message
@@ -106,12 +122,13 @@ export default class EditCompany extends Component {
 
   editCompany = (editedCompany) => {
     let api_key = 'dada';
-    let company_id = this.props.match.params.id;
+    // let id = this.props.match.params.id;
     axios.request({
       method: 'put',
-      url: `https://press-cliping.herokuapp.com/api/companies/${company_id}?api_key=${api_key}`,
+      url: `https://press-cliping.herokuapp.com/api/companies?api_key=${api_key}`,
       data: editedCompany
-    }).then(response => {
+    })
+    .then(response => {
       this.setState({
         message: response.data.message
       })
@@ -123,7 +140,10 @@ export default class EditCompany extends Component {
     editedCompany = {
       name: this.state.name,
       keywords: this.state.keywords,
-      addedKeywords: this.state.addedKeywords
+      addedKeywords: this.state.addedKeywords,
+      role_name: this.props.login.rola,
+      id: this.props.login.id,
+      company_id: this.props.match.params.id
     }
     this.editCompany(editedCompany)
     console.log('editedCompany :', editedCompany);
@@ -131,6 +151,8 @@ export default class EditCompany extends Component {
   }
   render() {
     console.log('this.state :', this.state);
+    console.log('this.propsaaaaaaaaaad :', this.props);
+
     let { name, keywords, addedKeywords } = this.state
     const words = addedKeywords.map((item) => {
       return (
@@ -149,7 +171,7 @@ export default class EditCompany extends Component {
           keywords !== undefined ? keywords.map((item, key) => {
             return (
               <div key={item.id}>
-                <Input name={item.name} defaultValue={item.name}
+                <Input name={item.name} value={item.name}
                   onChange={(e) => this.handleChangeKeyword(item.id, e)} />
                 <Button onClick={() => this.onDelete(item.id)} content='Delete' />
                 <br />

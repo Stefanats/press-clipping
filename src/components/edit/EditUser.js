@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import UserItem from './UserItem'
+import { connect } from 'react-redux';
+
+@connect(state => ({ login: state.login }))
 
 export default class EditUser extends Component {
 	constructor(props) {
@@ -10,16 +13,26 @@ export default class EditUser extends Component {
 		}
 	}
 	componentDidMount() {
-		this.getUsers()
+		this.get()
 	}
-	getUsers = () => {
+	getUsers = (get) => {
 		let api_key = 'dada';
-		let company_id = this.props.match.params.id;
-		axios({
-			method: 'get',
-			url: `https://press-cliping.herokuapp.com/api/company/users?company_id=${company_id}&api_key=${api_key}`,
+		// let id = this.props.login.id
+		// let role_name = this.props.login.rola
+		// let obj = {
+		// 	id,
+		// 	role_name,
+		// 	company_id: this.props.match.params.id
+		// }
+		// console.log('obj :', obj);
+		axios.request({
+			method: 'post',
+			url: `https://press-cliping.herokuapp.com/api/company/users?api_key=${api_key}`,
+			data: get
 		})
 			.then(response => {
+		console.log('object :', response)
+
 				this.setState({
 					users: response.data.users
 				})
@@ -37,13 +50,28 @@ export default class EditUser extends Component {
 				// })
 			})
 	}
+	get = () => {
+		let obj = {}
+		obj = {
+			id: this.props.login.id,
+			role_name: this.props.login.rola,
+			company_id: this.props.match.params.id
+		}
+		console.log('okkkkkkk :', this.props.login);
+		console.log('jos jedan okkkkk :', obj);
+		this.getUsers(obj)
+	}
 	onDelete = (id) => {
 		console.log('userId :', id);
 		let api_key = 'dada';
+		let obj = {
+			id: this.props.login.id,
+			role_name: this.props.login.rola,
+		}
 		axios.request({
 			method: 'delete',
 			url: `https://press-cliping.herokuapp.com/api/users/${id}?api_key=${api_key}`,
-			data: id
+			data: obj
 		}).then(response => {
 			this.setState({
 				message: response.data.message
@@ -52,7 +80,7 @@ export default class EditUser extends Component {
 		}).catch(err => console.log('err ', err));
 	}
 	render() {
-		console.log('this.state :', this.state);
+		console.log('this.jebote :', this.props);
 		const { users } = this.state
 		const usersArr = users.map((user) => {
 			return (

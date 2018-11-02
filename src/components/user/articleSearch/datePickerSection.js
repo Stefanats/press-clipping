@@ -27,8 +27,8 @@ class DatePickerSection extends Component {
       date: newDate
     })
     this.props.text === "Od" ?
-      this.props.dispatch({type: "SET_FROM", from: newDate}) :
-      this.props.dispatch({type: "SET_TO", to: newDate})
+      this.props.dispatch({ type: "SET_FROM", from: newDate }) :
+      this.props.dispatch({ type: "SET_TO", to: newDate })
     this.toggleCalendar()
   }
   toggleCalendar = (e) => {
@@ -40,7 +40,9 @@ class DatePickerSection extends Component {
     return (
       <div style={{ margin: "5px" }}>
         <Button
-          onClick={this.toggleCalendar}>
+          onClick={this.toggleCalendar}
+          style={{ background: '#0bad0b', color: 'white' }}
+        >
           {this.state.date}
         </Button>
         {

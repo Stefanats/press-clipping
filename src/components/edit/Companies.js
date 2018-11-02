@@ -3,7 +3,7 @@ import axios from 'axios'
 import CompanyItem from './CompanyItem';
 import Hoc from '../hoc/hoc'
 import { connect } from 'react-redux';
-import {  Redirect } from 'react-router'
+import { Redirect } from 'react-router'
 
 @Hoc
 @connect(state => ({ login: state.login }))
@@ -23,10 +23,15 @@ export default class Companies extends Component {
 		// let companyId = this.state.item.id
 		console.log('companyId :', id);
 		let api_key = 'dada';
+		let obj = {
+			role_name: this.props.login.rola,
+			id: this.props.login.id,
+			company_id: id
+		}
 		axios.request({
-			method: 'delete',
-			url: `https://press-cliping.herokuapp.com/api/companies/${id}?api_key=${api_key}`,
-			data: id
+			method: 'post',
+			url: `https://press-cliping.herokuapp.com/api/companyDelete?api_key=${api_key}`,
+			data: obj
 		}).then(response => {
 			this.setState({
 				message: response.data.message
@@ -48,6 +53,8 @@ export default class Companies extends Component {
 	}
 	render() {
 		console.log('commm :', this.state);
+		console.log('commmPropss :', this.props);
+
 
 		let companies = this.state.companies.map((company) => {
 			return (
@@ -56,10 +63,10 @@ export default class Companies extends Component {
 		})
 		return (
 			this.props.login.rola === 'admin' ?
-			<div>
-				{companies}
-				<div>{this.state.message}</div>
-			</div> : <Redirect to="/user" />
+				<div>
+					{companies}
+					<div>{this.state.message}</div>
+				</div> : <Redirect to="/user" />
 		)
 	}
 }

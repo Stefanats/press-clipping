@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 
 
-@connect(state => ({ proba: state.articleSearch }))
+@connect(state => ({ proba: state.articleSearch, login: state.login }))
 
 class PressPublisher extends Component {
 	constructor(props) {
@@ -23,9 +23,15 @@ class PressPublisher extends Component {
 	}
 	getPublishers = () => {
 		let api_key = 'dada';
+		let obj = {}
+		obj = {
+			id: this.props.login.id,
+			role_name: this.props.login.rola
+		}
 		axios({
-			method: 'get',
-			url: `https://press-cliping.herokuapp.com/api/media?api_key=${api_key}`,
+			method: 'post',
+			url: `https://press-cliping.herokuapp.com/api/mediaGetAll?api_key=${api_key}`,
+			data: obj
 		})
 			.then(response => {
 				let arr = [{

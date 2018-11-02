@@ -25,6 +25,7 @@ import Edit from './edit/Edit'
 import ChooseCompany from './edit/ChooseCompany'
 import EditUser from './edit/EditUser'
 import EditSingleUser from './edit/EditSingleUser'
+import EditArticle from './operator/EditArticle'
 
 const AppRoute = ({ component: Component, layout: Layout, ...rest }) => (
 
@@ -43,6 +44,7 @@ const Main = () => (
       <AppRoute layout={NavBar} exact path="/admin" component={Admin} />
       <AppRoute layout={EditorNavBar} exact path="/editor" component={Editor} />
       <AppRoute layout={OperatorNavBar} exact path="/operator" component={Operator} />
+      <AppRoute layout={OperatorNavBar} exact path="/operator/editArticle/:itemName/:id" component={EditArticle} />
       <AppRoute layout={NavBar} exact path="/createUser" component={CreateUser} />
       <AppRoute layout={NavBar} exact path="/createCompany" component={CreateCompany} />
       <AppRoute layout={NavBar} exact path="/edit" component={Edit} />

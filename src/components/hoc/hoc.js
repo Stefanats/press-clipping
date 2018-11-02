@@ -1,7 +1,7 @@
 import React from 'react';
 import HocError from './hocError';
 
-function Hoc (Component, props) {
+function Hoc(Component, props) {
   return class extends React.Component {
     constructor(props) {
       super(props);
@@ -10,9 +10,8 @@ function Hoc (Component, props) {
       }
     }
     componentDidMount() {
-
       let token = window.localStorage.getItem("token")
-      if(token !== null) {
+      if (token !== null) {
         this.setState({
           ulogovan: true
         })
@@ -28,8 +27,8 @@ function Hoc (Component, props) {
         <div>
           {
             this.state.ulogovan ?
-            <Component /> :
-            <HocError />
+              <Component {...props} /> :
+              <HocError />
           }
         </div>
       )

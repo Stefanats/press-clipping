@@ -16,7 +16,7 @@ class NavBar extends Component {
 		let user = window.localStorage.getItem('user')
 		user = JSON.parse(user)
 		!session ? this.setState({ token: true }) : this.setState({ token: false })
-		!session ? this.props.dispatch({ type: "LOGOUT" }) : this.props.dispatch({ type: "LOGIN", user: user.name, rola: user.role_name  })
+		!session ? this.props.dispatch({ type: "LOGOUT" }) : this.props.dispatch({ type: "LOGIN", user: user.name, rola: user.role_name, id: user.user_id  })
 	}
 	render() {
 		const { activeItem } = this.state

@@ -5,10 +5,12 @@ import PressType from '../user/articleSearch/pressType';
 import { Button, GridColumn, TextArea, Grid, GridRow, Input, Loader, Dimmer, Header } from 'semantic-ui-react';
 import PressPublisher from '../user/articleSearch/pressPublisher';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import { deleteArticle } from './actions/deleteArticle'
 
 @connect(state => ({ proba: state.articleSearch, login: state.login }))
 
-class ArticlesSearchEditor extends Component {
+class ArticlesSearchOperater extends Component {
   constructor(props) {
     super();
     this.state = {
@@ -134,7 +136,7 @@ class ArticlesSearchEditor extends Component {
     }).catch(err => console.log('err ', err));
   }
 
-  backArticle = (id, c_id) => {
+  deleteArticle = (id, c_id) => {
     let api_key = 'dada';
     let obj = {}
     obj = {
@@ -144,17 +146,16 @@ class ArticlesSearchEditor extends Component {
       press_id: id,
       company_id: c_id
     }
-    console.log('obj :', obj);
     axios.request({
-      method: 'put',
-      url: `https://press-cliping.herokuapp.com/api/editorDisallow?api_key=${api_key}`,
+      method: 'post',
+      url: `https://press-cliping.herokuapp.com/api/operatorDelete?api_key=${api_key}`,
       data: obj
     })
       .then(response => {
         console.log('response :', response);
         if (response.data.success === true) {
           this.setState({
-            deleteMsg: 'Vratili ste clanak Operatoru!',
+            deleteMsg: 'Obrisali ste clanak!',
             active: true,
             Active: false
           })
@@ -179,14 +180,14 @@ class ArticlesSearchEditor extends Component {
     }
     axios.request({
       method: 'put',
-      url: `https://press-cliping.herokuapp.com/api/editorAllow?api_key=${api_key}`,
+      url: `https://press-cliping.herokuapp.com/api/operatorChangeStage?api_key=${api_key}`,
       data: obj
     })
       .then(response => {
         console.log('response :', response);
         if (response.data.success === true) {
           this.setState({
-            approveMsg: 'Clanak poslat korisniku!',
+            approveMsg: 'Clanak poslat editoru!',
             Active: true,
             active: false
           })
@@ -200,7 +201,29 @@ class ArticlesSearchEditor extends Component {
       })
     console.log('obj :', obj);
   }
-  backArticleObj = (id, name, c_id) => {
+  editArticle = (id, c_id) => {
+    // let api_key = 'dada';
+    // let obj = {}
+    // obj = {
+    //   id: this.props.login.id,
+    //   role_name: this.props.login.rola,
+    //   press_type: this.props.proba.pressType,
+    //   press_id: id,
+    //   text: this.state.text,
+    //   company_id: c_id
+    // }
+    // axios.request({
+    //   method: 'put',
+    //   url: `https://press-cliping.herokuapp.com/api/operatorEditText?api_key=${api_key}`,
+    //   data: obj
+    // })
+    //   .then(response => {
+    //     console.log('response :', response);
+    //   })
+    // console.log('obj :', obj);
+  }
+
+  deleteArticleObj = (id, name, c_id) => {
     let api_key = 'dada';
     let obj = {}
     obj = {
@@ -211,15 +234,15 @@ class ArticlesSearchEditor extends Component {
       company_id: c_id
     }
     axios.request({
-      method: 'put',
-      url: `https://press-cliping.herokuapp.com/api/editorDisallow?api_key=${api_key}`,
+      method: 'post',
+      url: `https://press-cliping.herokuapp.com/api/operatorDelete?api_key=${api_key}`,
       data: obj
     })
       .then(response => {
         console.log('response :', response);
         if (response.data.success === true) {
           this.setState({
-            deleteMsg: 'Vratili ste clanak Operatoru!',
+            deleteMsg: 'Obrisali ste clanak!',
             active: true,
             Active: false
           })
@@ -231,7 +254,6 @@ class ArticlesSearchEditor extends Component {
         }
           , 2000)
       })
-    console.log('obj :', obj);
   }
   approveArticleObj = (id, name, c_id) => {
     let api_key = 'dada';
@@ -245,14 +267,14 @@ class ArticlesSearchEditor extends Component {
     }
     axios.request({
       method: 'put',
-      url: `https://press-cliping.herokuapp.com/api/editorAllow?api_key=${api_key}`,
+      url: `https://press-cliping.herokuapp.com/api/operatorChangeStage?api_key=${api_key}`,
       data: obj
     })
       .then(response => {
         console.log('response :', response);
         if (response.data.success === true) {
           this.setState({
-            approveMsg: 'Clanak poslat korisniku!',
+            approveMsg: 'Poslali ste clanak editoru!',
             Active: true,
             active: false
           })
@@ -266,6 +288,29 @@ class ArticlesSearchEditor extends Component {
       })
     console.log('obj :', obj);
   }
+  editArticleObj = (id, name, c_id) => {
+    // let api_key = 'dada';
+    // let obj = {}
+    // obj = {
+    //   id: this.props.login.id,
+    //   role_name: this.props.login.rola,
+    //   press_type: name.toLowerCase(),
+    //   press_id: id,
+    //   text: this.state.text,
+    //   company_id: c_id
+    // }
+    // axios.request({
+    //   method: 'put',
+    //   url: `https://press-cliping.herokuapp.com/api/operatorEditText?api_key=${api_key}`,
+    //   data: obj
+    // })
+    //   .then(response => {
+    //     console.log('response :', response);
+    //   })
+    // console.log('obj :', obj);
+  }
+
+
 
   handleSubmit = (e) => {
     let obj = {}
@@ -282,6 +327,12 @@ class ArticlesSearchEditor extends Component {
   }
 
   render() {
+    // const { articles } = this.state
+    // let articlesArr = articles.map((article) => {
+    //   return (
+    //     <Article text={article.text} link={article.link_src} slug={article.media_slug} time={article.updated_at} />
+    //   )
+    // })
     console.log("IZ REDUXA", this.props)
     console.log('ovo trazim :', this.state);
     const { active, Active } = this.state
@@ -300,9 +351,9 @@ class ArticlesSearchEditor extends Component {
                       <div>Izdavac: {article.media_slug}</div>
                       <div>{article.updated_at}</div>
                       <TextArea cols="35" name={article.text} value={article.text === null ? '' : article.text} /><br />
-                      <Button onClick={() => this.backArticle(article.id, article.company_id)} content='Vrati operateru' color='google plus' />
+                      <Button onClick={() => this.deleteArticle(article.id, article.company_id)} content='Obrisi' color='google plus' />
                       <Button onClick={() => this.approveArticle(article.id, article.company_id)} content='Odobri' color='green' />
-                      
+                      <Link to={`/operator/editArticle/${item.name}/${article.id}`}><Button color='blue' content='Edituj' /></Link>
                     </div>
                   </GridColumn>
                 )
@@ -327,9 +378,9 @@ class ArticlesSearchEditor extends Component {
                       <div>Izdavac: {article.media_slug}</div>
                       <div>{article.updated_at}</div>
                       <TextArea cols="35" name={article.text} value={article.text === null ? '' : article.text} /><br />
-                      <Button onClick={() => this.backArticle(article.id, article.company_id)} content='Vrati operateru' color='google plus' />
+                      <Button onClick={() => this.deleteArticle(article.id, article.company_id)} content='Obrisi' color='google plus' />
                       <Button onClick={() => this.approveArticle(article.id, article.company_id)} content='Odobri' color='green' />
-                     
+                      <Link to={`/operator/editArticle/${item.name}/${article.id}`}><Button color='blue' content='Edituj' /></Link>
                     </div>
                   </GridColumn>
                 )
@@ -355,9 +406,9 @@ class ArticlesSearchEditor extends Component {
                       <div>Izdavac: {article.media_slug}</div>
                       <div>{article.updated_at}</div>
                       <TextArea cols="35" name={article.text} value={article.text === null ? '' : article.text} /><br />
-                      <Button onClick={() => this.backArticleObj(article.id, item.name, article.company_id)} content='Vrati operateru' color='google plus' />
+                      <Button onClick={() => this.deleteArticleObj(article.id, item.name, article.company_id)} content='Obrisi' color='google plus' />
                       <Button onClick={() => this.approveArticleObj(article.id, item.name, article.company_id)} content='Odobri' color='green' />
-                      
+                      <Link to={`/operator/editArticle/${item.name}/${article.id}`}><Button color='blue' content='Edituj' /></Link>
                     </div>
                   </GridColumn>
                 )
@@ -383,9 +434,9 @@ class ArticlesSearchEditor extends Component {
                       <div>Izdavac: {article.media_slug}</div>
                       <div>{article.updated_at}</div>
                       <TextArea cols="35" name={article.text} value={article.text === null ? '' : article.text} /><br />
-                      <Button onClick={() => this.backArticleObj(article.id, item.name)} content='Obrisi' color='google plus' />
+                      <Button onClick={() => this.deleteArticleObj(article.id, item.name)} content='Obrisi' color='google plus' />
                       <Button onClick={() => this.approveArticleObj(article.id, item.name)} content='Odobri' color='green' />
-                      
+                      <Link to={`/operator/editArticle/${item.name}/${article.id}`}><Button color='blue' content='Edituj' /></Link>
                     </div>
                   </GridColumn>
                 )
@@ -437,4 +488,4 @@ class ArticlesSearchEditor extends Component {
     )
   }
 }
-export default ArticlesSearchEditor;
+export default ArticlesSearchOperater;

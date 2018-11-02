@@ -4,6 +4,8 @@ import EditUserName from './editUser/EditUserName'
 import EditUserLastName from './editUser/EditUserLastName'
 import EditUserEmail from './editUser/EditUserEmail'
 import { Button, Input, Dropdown } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+
 
 let roles = [{
   key: 1, text: 'Admin', value: 1
@@ -17,6 +19,8 @@ let roles = [{
 {
   key: 31, text: 'Korisnik', value: 31
 }]
+
+@connect(state => ({ login: state.login }))
 
 export default class EditSingleUser extends Component {
   constructor(props) {
@@ -42,9 +46,15 @@ export default class EditSingleUser extends Component {
   getUser = () => {
     let api_key = 'dada';
     let user_id = this.props.match.params.id;
+    let obj = {
+      user_id,
+      role_name: this.props.login.rola,
+      id: this.props.login.id
+    }
     axios({
-      method: 'get',
-      url: `https://press-cliping.herokuapp.com/api/users/${user_id}?api_key=${api_key}`,
+      method: 'post',
+      url: `https://press-cliping.herokuapp.com/api/userGetOne?api_key=${api_key}`,
+      data: obj
     })
       .then(response => {
         this.setState({
@@ -81,13 +91,17 @@ export default class EditSingleUser extends Component {
         last_name: this.state.lastName,
         email: this.state.newEmail,
         password: this.state.password,
-        role_id: this.state.role
+        role_id: this.state.role,
+        role_name: this.props.login.rola,
+        id: this.props.login.id
       }
     } else {
       editedUser = {
         name: this.state.name,
         last_name: this.state.lastName,
-        role_id: this.state.role
+        role_id: this.state.role,
+        role_name: this.props.login.rola,
+        id: this.props.login.id
       }
     }
 

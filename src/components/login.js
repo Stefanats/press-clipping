@@ -55,7 +55,7 @@ class Login extends Component {
             type: "LOGIN",
             user: response.data.name,
             rola: response.data.role_name,
-            id: response.data.id
+            id: response.data.user_id
           });
           if(response.data.role_name === 'admin'){
             this.props.history.push("/admin");

@@ -62,7 +62,9 @@ class CreateCompany extends Component {
 			companies = {
 				name: this.state.company,
 				slug: this.state.company,
-				keywords: this.state.keywords
+				keywords: this.state.keywords,
+				role_name: this.props.login.rola,
+				id: this.props.login.id
 			}
 			this.addCompany(companies);
 			this.setState({
