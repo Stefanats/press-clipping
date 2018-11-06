@@ -3,7 +3,7 @@ import Hoc from '../../hoc/hoc';
 import axios from 'axios';
 import { Input, Button } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import {  Redirect } from 'react-router'
+import { Redirect } from 'react-router'
 
 @Hoc
 @connect(state => ({ login: state.login }))
@@ -39,20 +39,16 @@ class CreateCompany extends Component {
 			data: newCompany
 		}).then(response => {
 			console.log('response :', response);
-			this.setState({
-				message: response.data.message
-			})
+			if (response.data.success === true) {
+				this.setState({
+					message: 'Kompanija kreirana!'
+				})
+			}
+
 		}).catch(response => console.log('err ', response));
 	}
 
 	pushItem = () => {
-		// let companies = this.state.companyArr;
-		// companies.push({
-		// 	// id: this.state.id + 1,
-		// 	name: this.state.company,
-		// 	slug: this.state.company,
-		// 	keywords: this.state.keywords
-		// })
 		const errors = this.validate(this.state.company)
 		this.setState({
 			errors
@@ -108,22 +104,22 @@ class CreateCompany extends Component {
 		console.log('this.state :', this.state);
 		return (
 			this.props.login.rola === 'admin' ?
-			<div>
-				<h2>Create Company</h2>
-				<span>Company name:</span>
-				<Input name='company' value={this.state.company} onChange={this.handleChange} /><br />
-				<span style={{ color: 'red' }}>{this.state.errors.name}</span><br />
-				<span>Company keywords:</span>
-				<Input name='keyword' value={this.state.keyword} onChange={this.handleChange} />
-				<Button content='+' onClick={this.pushKeyword} />
-				{
-					words
-				}
-				<br /><br />
-				<p>{this.state.message}</p>
-				<Button content='Create company' onClick={this.pushItem} />
+				<div style={{ marginLeft: '50px', paddingTop: '50px' }}>
+					<h2>Kreiraj kompaniju:</h2>
+					<span style={{minWidth:'100px',display:'inline-block'}}>Ime kompanije:</span>
+					<Input name='company' value={this.state.company} onChange={this.handleChange} /><br />
+					<span style={{ color: 'red' }}>{this.state.errors.name}</span><br />
+					<span style={{minWidth:'100px',display:'inline-block'}}>Ključne reči:</span>
+					<Input name='keyword' value={this.state.keyword} onChange={this.handleChange} />
+					<Button content='+' color='blue' onClick={this.pushKeyword} style={{ marginLeft: '10px' }} />
+					{
+						words
+					}
+					<br /><br />
+					<p style={{fontSize: '16px'}}>{this.state.message}</p>
+					<Button content='Kreiraj' color='green' onClick={this.pushItem} />
 
-			</div> : <Redirect to="/user" />
+				</div> : <Redirect to="/user" />
 		)
 	}
 }

@@ -11,33 +11,16 @@ class CompanyItem extends Component {
 			message: ''
 		}
 	}
-	// onDelete = (id) => {
-	// 	// let companyId = this.state.item.id
-	// 	console.log('companyId :', id);
-	// 	let api_key = 'dada';
-	// 	axios.request({
-	// 		method: 'delete',
-	// 		url: `https://press-cliping.herokuapp.com/api/companies/${id}?api_key=${api_key}`,
-	// 		data: id
-	// 	}).then(response => {
-	// 		this.setState({
-	// 			message: response.data.message
-	// 		})
-	// 		console.log('response :', response);
-	// 	}).catch(err => console.log('err ', err));
-	// }
 	render() {
 		console.log('this.state.item :', this.state.item);
 		return (
 			<div>
-				<li>
-					<span>{this.state.item.name}</span>
-					<Link to={`/edit/companies/${this.state.item.id}`}> EDIT </Link>
-					{/* <Button onClick={this.onDelete} content='delete' /><br /> */}
+				<li style={{ padding: '5px 0px 5px' }}>
+					<span style={{ paddingRight: '20px', minWidth: '150px', display: 'inline-block', fontSize: '14px' }}>{this.state.item.name}</span>
+					<Button color='green'><Link style={{ color: 'white'}} to={`/edit/companies/${this.state.item.id}`}> Edit </Link></Button>
 					<Button
-						// onClick={() => this.onDelete(this.state.item.id)} 
 						onClick={() => this.props.onDelete(this.state.item.id)}
-						content='delete' /><br />
+						content='Obriši' color='google plus' /><br />
 				</li>
 			</div>
 		)

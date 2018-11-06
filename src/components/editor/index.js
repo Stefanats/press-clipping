@@ -5,6 +5,8 @@ import PressType from '../user/articleSearch/pressType';
 import { Button, GridColumn, TextArea, Grid, GridRow, Input, Loader, Dimmer, Header } from 'semantic-ui-react';
 import PressPublisher from '../user/articleSearch/pressPublisher';
 import axios from 'axios';
+import CryptoJS from 'crypto-js'
+
 
 @connect(state => ({ proba: state.articleSearch, login: state.login }))
 
@@ -31,9 +33,10 @@ class ArticlesSearchEditor extends Component {
     this.getToken()
   }
   getToken = () => {
-    let token = window.localStorage.getItem("user")
-    let tokenParse = JSON.parse(token)
-    let company_id = tokenParse.company_id
+    let userToken = window.localStorage.getItem('novi token')
+    let bytes = CryptoJS.AES.decrypt(userToken.toString(), 'lgitruybcintun');
+    let user = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    let company_id = user.company_id
     this.setState({
       company_id
     })
@@ -66,6 +69,7 @@ class ArticlesSearchEditor extends Component {
       data: params
     }).then(response => {
       if (Array.isArray(response.data) === true) {
+        console.log('response.data :', response.data)
         if (this.props.proba.pressType === 'stampani') {
           console.log('stampani :');
           let arrSt = []
@@ -271,7 +275,6 @@ class ArticlesSearchEditor extends Component {
     let obj = {}
     obj = {
       period: this.props.proba.period,
-      // company_id: this.state.company_id,
       publisher: this.props.proba.publisher,
       pressType: this.props.proba.pressType,
       id: this.props.login.id,
@@ -295,14 +298,16 @@ class ArticlesSearchEditor extends Component {
               item.articles.map((article) => {
                 return (
                   <GridColumn computer={4}>
-                    <div style={{ marginTop: '50px', display: `${this.state.display}` }}>
-                      <a href={article.link_src} style={{ fontSize: '18px' }} target="_blank">Link</a>
+                    <div style={{ marginTop: '50px' }}>
+                      <a href={article.original_src} style={{ fontSize: '18px' }} target="_blank">Originalni Pdf</a><br />
+                      <a href={article.modified_src} style={{ fontSize: '18px' }} target="_blank">Modifikovani Pdf</a><br />
+                      <a href={article.single_page_src} style={{ fontSize: '18px' }} target="_blank">Izdvojena stranica</a><br />
                       <div>Izdavac: {article.media_slug}</div>
                       <div>{article.updated_at}</div>
                       <TextArea cols="35" name={article.text} value={article.text === null ? '' : article.text} /><br />
                       <Button onClick={() => this.backArticle(article.id, article.company_id)} content='Vrati operateru' color='google plus' />
                       <Button onClick={() => this.approveArticle(article.id, article.company_id)} content='Odobri' color='green' />
-                      
+
                     </div>
                   </GridColumn>
                 )
@@ -322,14 +327,14 @@ class ArticlesSearchEditor extends Component {
               item.articles.map((article) => {
                 return (
                   <GridColumn computer={4}>
-                    <div style={{ marginTop: '50px', display: `${this.state.display}` }}>
+                    <div style={{ marginTop: '50px' }}>
                       <a href={article.link_src} style={{ fontSize: '18px' }} target="_blank">Link</a>
                       <div>Izdavac: {article.media_slug}</div>
                       <div>{article.updated_at}</div>
                       <TextArea cols="35" name={article.text} value={article.text === null ? '' : article.text} /><br />
                       <Button onClick={() => this.backArticle(article.id, article.company_id)} content='Vrati operateru' color='google plus' />
                       <Button onClick={() => this.approveArticle(article.id, article.company_id)} content='Odobri' color='green' />
-                     
+
                     </div>
                   </GridColumn>
                 )
@@ -349,7 +354,6 @@ class ArticlesSearchEditor extends Component {
               item.arr.map((article) => {
                 return (
                   <GridColumn computer={4}>
-                    {/* <Article text={item.text} slug={item.media_slug} /> */}
                     <div style={{ marginTop: '50px' }}>
                       <a href={article.link_src} style={{ fontSize: '18px' }} target="_blank">Link</a>
                       <div>Izdavac: {article.media_slug}</div>
@@ -357,7 +361,7 @@ class ArticlesSearchEditor extends Component {
                       <TextArea cols="35" name={article.text} value={article.text === null ? '' : article.text} /><br />
                       <Button onClick={() => this.backArticleObj(article.id, item.name, article.company_id)} content='Vrati operateru' color='google plus' />
                       <Button onClick={() => this.approveArticleObj(article.id, item.name, article.company_id)} content='Odobri' color='green' />
-                      
+
                     </div>
                   </GridColumn>
                 )
@@ -377,15 +381,16 @@ class ArticlesSearchEditor extends Component {
               item.arr.map((article) => {
                 return (
                   <GridColumn computer={4}>
-                    {/* <Article text={item.text} slug={item.media_slug} /> */}
                     <div style={{ marginTop: '50px' }}>
-                      <a href={article.link_src} style={{ fontSize: '18px' }} target="_blank">Link</a>
+                      <a href={article.original_src} style={{ fontSize: '18px' }} target="_blank">Originalni Pdf</a><br />
+                      <a href={article.modified_src} style={{ fontSize: '18px' }} target="_blank">Modifikovani Pdf</a><br />
+                      <a href={article.single_page_src} style={{ fontSize: '18px' }} target="_blank">Izdvojena stranica</a><br />
                       <div>Izdavac: {article.media_slug}</div>
                       <div>{article.updated_at}</div>
                       <TextArea cols="35" name={article.text} value={article.text === null ? '' : article.text} /><br />
-                      <Button onClick={() => this.backArticleObj(article.id, item.name)} content='Obrisi' color='google plus' />
+                      <Button onClick={() => this.backArticleObj(article.id, item.name)} content='Vrati operatoru' color='google plus' />
                       <Button onClick={() => this.approveArticleObj(article.id, item.name)} content='Odobri' color='green' />
-                      
+
                     </div>
                   </GridColumn>
                 )

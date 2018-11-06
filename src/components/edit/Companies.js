@@ -20,7 +20,6 @@ export default class Companies extends Component {
 		this.getCompanies();
 	}
 	onDelete = (id) => {
-		// let companyId = this.state.item.id
 		console.log('companyId :', id);
 		let api_key = 'dada';
 		let obj = {
@@ -33,9 +32,12 @@ export default class Companies extends Component {
 			url: `https://press-cliping.herokuapp.com/api/companyDelete?api_key=${api_key}`,
 			data: obj
 		}).then(response => {
-			this.setState({
-				message: response.data.message
-			})
+			if (response.data.success === true) {
+				this.setState({
+					message: 'Kompanija obrisana!'
+				})
+			}
+
 			console.log('response :', response);
 		}).catch(err => console.log('err ', err));
 	}
@@ -63,9 +65,9 @@ export default class Companies extends Component {
 		})
 		return (
 			this.props.login.rola === 'admin' ?
-				<div>
+				<div style={{ padding: '50px' }}>
 					{companies}
-					<div>{this.state.message}</div>
+					<div style={{ fontSize: '18px' }}>{this.state.message}</div>
 				</div> : <Redirect to="/user" />
 		)
 	}

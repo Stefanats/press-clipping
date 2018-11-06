@@ -14,7 +14,7 @@ class Admin extends React.Component {
       this.props.login.rola === 'admin' ?
       <div style={{ padding: "50px" }}>
         Admin
-          <ArticleSearch />
+          {/* <ArticleSearch /> */}
       </div> : 
       this.props.login.rola === 'editor' ? <Redirect to="/editor" /> : 
       this.props.login.rola === 'korisnik' ? <Redirect to="/user" /> : 

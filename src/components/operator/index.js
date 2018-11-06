@@ -6,7 +6,8 @@ import { Button, GridColumn, TextArea, Grid, GridRow, Input, Loader, Dimmer, Hea
 import PressPublisher from '../user/articleSearch/pressPublisher';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { deleteArticle } from './actions/deleteArticle'
+import CryptoJS from 'crypto-js'
+
 
 @connect(state => ({ proba: state.articleSearch, login: state.login }))
 
@@ -33,29 +34,15 @@ class ArticlesSearchOperater extends Component {
     this.getToken()
   }
   getToken = () => {
-    let token = window.localStorage.getItem("user")
-    let tokenParse = JSON.parse(token)
-    let company_id = tokenParse.company_id
+    let userToken = window.localStorage.getItem('novi token')
+    let bytes = CryptoJS.AES.decrypt(userToken.toString(), 'lgitruybcintun');
+    let user = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    let company_id = user.company_id
     this.setState({
       company_id
     })
   }
-  showArticles = () => {
-    this.setState({
-      show: !this.state.show
-    })
-    if (this.state.show === true) {
-      this.setState({
-        display: 'block'
-      })
-    }
-    if (this.state.show === false) {
-      this.setState({
-        display: 'none'
-      })
-    }
 
-  }
   getArticles(params) {
     this.setState({
       loader: true
@@ -201,27 +188,6 @@ class ArticlesSearchOperater extends Component {
       })
     console.log('obj :', obj);
   }
-  editArticle = (id, c_id) => {
-    // let api_key = 'dada';
-    // let obj = {}
-    // obj = {
-    //   id: this.props.login.id,
-    //   role_name: this.props.login.rola,
-    //   press_type: this.props.proba.pressType,
-    //   press_id: id,
-    //   text: this.state.text,
-    //   company_id: c_id
-    // }
-    // axios.request({
-    //   method: 'put',
-    //   url: `https://press-cliping.herokuapp.com/api/operatorEditText?api_key=${api_key}`,
-    //   data: obj
-    // })
-    //   .then(response => {
-    //     console.log('response :', response);
-    //   })
-    // console.log('obj :', obj);
-  }
 
   deleteArticleObj = (id, name, c_id) => {
     let api_key = 'dada';
@@ -238,8 +204,11 @@ class ArticlesSearchOperater extends Component {
       url: `https://press-cliping.herokuapp.com/api/operatorDelete?api_key=${api_key}`,
       data: obj
     })
+    console.log('objaaaaaaaaaaaaa :', obj)
+
       .then(response => {
         console.log('response :', response);
+
         if (response.data.success === true) {
           this.setState({
             deleteMsg: 'Obrisali ste clanak!',
@@ -288,27 +257,6 @@ class ArticlesSearchOperater extends Component {
       })
     console.log('obj :', obj);
   }
-  editArticleObj = (id, name, c_id) => {
-    // let api_key = 'dada';
-    // let obj = {}
-    // obj = {
-    //   id: this.props.login.id,
-    //   role_name: this.props.login.rola,
-    //   press_type: name.toLowerCase(),
-    //   press_id: id,
-    //   text: this.state.text,
-    //   company_id: c_id
-    // }
-    // axios.request({
-    //   method: 'put',
-    //   url: `https://press-cliping.herokuapp.com/api/operatorEditText?api_key=${api_key}`,
-    //   data: obj
-    // })
-    //   .then(response => {
-    //     console.log('response :', response);
-    //   })
-    // console.log('obj :', obj);
-  }
 
 
 
@@ -316,7 +264,6 @@ class ArticlesSearchOperater extends Component {
     let obj = {}
     obj = {
       period: this.props.proba.period,
-      // company_id: this.state.company_id,
       publisher: this.props.proba.publisher,
       pressType: this.props.proba.pressType,
       id: this.props.login.id,
@@ -327,12 +274,6 @@ class ArticlesSearchOperater extends Component {
   }
 
   render() {
-    // const { articles } = this.state
-    // let articlesArr = articles.map((article) => {
-    //   return (
-    //     <Article text={article.text} link={article.link_src} slug={article.media_slug} time={article.updated_at} />
-    //   )
-    // })
     console.log("IZ REDUXA", this.props)
     console.log('ovo trazim :', this.state);
     const { active, Active } = this.state
@@ -340,15 +281,17 @@ class ArticlesSearchOperater extends Component {
     let clanciStampani = this.state.clanciStampani.map((item) => {
       return (
         <Grid style={{ marginTop: '50px' }}>
-          <div style={{ textAlign: 'center', margin: '0 auto', fontSize: '20px' }} onClick={this.showArticles}>{item.name + ' ' + item.date}</div><br />
+          <div style={{ textAlign: 'center', margin: '0 auto', fontSize: '20px' }} >{item.name + ' ' + item.date}</div><br />
           <GridRow>
             {
               item.articles.map((article) => {
                 return (
                   <GridColumn computer={4}>
-                    <div style={{ marginTop: '50px', display: `${this.state.display}` }}>
-                      <a href={article.link_src} style={{ fontSize: '18px' }} target="_blank">Link</a>
-                      <div>Izdavac: {article.media_slug}</div>
+                    <div style={{ marginTop: '50px' }}>
+                      <a href={article.original_src} style={{ fontSize: '18px' }} target="_blank">Originalni Pdf</a><br />
+                      <a href={article.modified_src} style={{ fontSize: '18px' }} target="_blank">Modifikovani Pdf</a><br />
+                      <a href={article.single_page_src} style={{ fontSize: '18px' }} target="_blank">Izdvojena stranica</a><br />
+                      <div>Izdavac: {article.media_slug}{article.returned === 1 ? <span style={{ marginLeft: '10px', color: 'red' }}>Vracen!</span> : null}</div>
                       <div>{article.updated_at}</div>
                       <TextArea cols="35" name={article.text} value={article.text === null ? '' : article.text} /><br />
                       <Button onClick={() => this.deleteArticle(article.id, article.company_id)} content='Obrisi' color='google plus' />
@@ -367,15 +310,15 @@ class ArticlesSearchOperater extends Component {
       return (
         <Grid style={{ marginTop: '50px' }}>
           <div style={{ textAlign: 'center', margin: '0 auto', fontSize: '20px' }}
-            onClick={this.showArticles}>{item.name + ' ' + item.date}</div><br />
+          >{item.name + ' ' + item.date}</div><br />
           <GridRow>
             {
               item.articles.map((article) => {
                 return (
                   <GridColumn computer={4}>
-                    <div style={{ marginTop: '50px', display: `${this.state.display}` }}>
+                    <div style={{ marginTop: '50px' }}>
                       <a href={article.link_src} style={{ fontSize: '18px' }} target="_blank">Link</a>
-                      <div>Izdavac: {article.media_slug}</div>
+                      <div>Izdavac: {article.media_slug}{article.returned === 1 ? <span style={{ marginLeft: '10px', color: 'red' }}>Vracen!</span> : null}</div>
                       <div>{article.updated_at}</div>
                       <TextArea cols="35" name={article.text} value={article.text === null ? '' : article.text} /><br />
                       <Button onClick={() => this.deleteArticle(article.id, article.company_id)} content='Obrisi' color='google plus' />
@@ -400,10 +343,10 @@ class ArticlesSearchOperater extends Component {
               item.arr.map((article) => {
                 return (
                   <GridColumn computer={4}>
-                    {/* <Article text={item.text} slug={item.media_slug} /> */}
                     <div style={{ marginTop: '50px' }}>
                       <a href={article.link_src} style={{ fontSize: '18px' }} target="_blank">Link</a>
-                      <div>Izdavac: {article.media_slug}</div>
+
+                      <div>Izdavac: {article.media_slug}{article.returned === 1 ? <span style={{ marginLeft: '10px', color: 'red' }}>Vracen!</span> : null}</div>
                       <div>{article.updated_at}</div>
                       <TextArea cols="35" name={article.text} value={article.text === null ? '' : article.text} /><br />
                       <Button onClick={() => this.deleteArticleObj(article.id, item.name, article.company_id)} content='Obrisi' color='google plus' />
@@ -428,14 +371,15 @@ class ArticlesSearchOperater extends Component {
               item.arr.map((article) => {
                 return (
                   <GridColumn computer={4}>
-                    {/* <Article text={item.text} slug={item.media_slug} /> */}
                     <div style={{ marginTop: '50px' }}>
-                      <a href={article.link_src} style={{ fontSize: '18px' }} target="_blank">Link</a>
-                      <div>Izdavac: {article.media_slug}</div>
+                      <a href={article.original_src} style={{ fontSize: '18px' }} target="_blank">Originalni Pdf</a><br />
+                      <a href={article.modified_src} style={{ fontSize: '18px' }} target="_blank">Modifikovani Pdf</a><br />
+                      <a href={article.single_page_src} style={{ fontSize: '18px' }} target="_blank">Izdvojena stranica</a><br />
+                      <div>Izdavac: {article.media_slug}{article.returned === 1 ? <span style={{ marginLeft: '10px', color: 'red' }}>Vracen!</span> : null}</div>
                       <div>{article.updated_at}</div>
                       <TextArea cols="35" name={article.text} value={article.text === null ? '' : article.text} /><br />
-                      <Button onClick={() => this.deleteArticleObj(article.id, item.name)} content='Obrisi' color='google plus' />
-                      <Button onClick={() => this.approveArticleObj(article.id, item.name)} content='Odobri' color='green' />
+                      <Button onClick={() => this.deleteArticleObj(article.id, item.name, article.company_id)} content='Obrisi' color='google plus' />
+                      <Button onClick={() => this.approveArticleObj(article.id, item.name, article.company_id)} content='Odobri' color='green' />
                       <Link to={`/operator/editArticle/${item.name}/${article.id}`}><Button color='blue' content='Edituj' /></Link>
                     </div>
                   </GridColumn>

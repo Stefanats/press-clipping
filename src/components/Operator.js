@@ -12,7 +12,7 @@ class Operator extends React.Component {
   render() {
     return (
       this.props.login.rola === 'operator' ?
-        <div style={{ padding: "50px", backgroundImage: `url(${Background})`, backgroundPosition: 'cover' }}>
+        <div style={{ padding: "50px" }}>
           Operator
           <ArticleSearchOperator />
         </div> :

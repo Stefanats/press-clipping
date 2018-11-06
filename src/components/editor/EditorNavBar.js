@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import Login from '../login';
 import Logout from '../logout'
 import { Menu } from 'semantic-ui-react';
+import CryptoJS from 'crypto-js'
+import pic from '../../images/159.jpg'
+
 
 @connect(state => ({ login: state.login }))
 
@@ -13,8 +16,9 @@ class EditorNavBar extends Component {
 	handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 	componentDidMount() {
 		let session = window.localStorage.getItem('token')
-		let user = window.localStorage.getItem('user')
-		user = JSON.parse(user)
+		let userToken = window.localStorage.getItem('novi token')
+		let bytes = CryptoJS.AES.decrypt(userToken.toString(), 'lgitruybcintun');
+		let user = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
 		!session ? this.setState({ token: true }) : this.setState({ token: false })
 		!session ? this.props.dispatch({ type: "LOGOUT" }) : this.props.dispatch({ type: "LOGIN", user: user.name, rola: user.role_name, id: user.user_id })
 	}
@@ -29,8 +33,8 @@ class EditorNavBar extends Component {
 						active={activeItem === 'userPage'}
 						onClick={this.handleItemClick}
 					>
-						<Link to='/operator'>
-							Home Editor
+						<Link to='/editor'>
+							Početna
 						</Link>
 					</Menu.Item>
 					<Menu.Item position='right'>
@@ -41,7 +45,7 @@ class EditorNavBar extends Component {
 						}
 					</Menu.Item>
 				</Menu>
-				<div>
+				<div style={{ background: `url(${pic})`, backgroundPosition: 'cover', minHeight: '100vh' }}>
 					{
 						this.props.children
 					}

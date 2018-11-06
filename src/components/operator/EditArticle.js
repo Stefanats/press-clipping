@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { TextArea, Button, Dimmer, Header } from 'semantic-ui-react';
+import CryptoJS from 'crypto-js'
+
 
 @connect(state => ({ login: state.login }))
 
@@ -14,8 +16,9 @@ export default class EditArticle extends Component {
     }
   }
   componentDidMount() {
-    let user = window.localStorage.getItem('user')
-    user = JSON.parse(user)
+    let userToken = window.localStorage.getItem('novi token')
+		let bytes = CryptoJS.AES.decrypt(userToken.toString(), 'lgitruybcintun');
+		let user = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
     let id = user.user_id
     let role_name = user.role_name
     this.getArticle(id, role_name)

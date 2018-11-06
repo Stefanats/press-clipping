@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Input, Button } from 'semantic-ui-react'
 import axios from 'axios';
 import { connect } from 'react-redux';
+import CryptoJS from 'crypto-js'
+
 
 @connect(state => ({ login: state.login }))
 
@@ -23,11 +25,15 @@ export default class EditCompany extends Component {
   }
   getCompany = () => {
     let api_key = 'dada';
+    let userToken = window.localStorage.getItem('novi token')
+    let bytes = CryptoJS.AES.decrypt(userToken.toString(), 'lgitruybcintun');
+    let user = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    console.log('user :', user);
     let obj = {}
     obj = {
       company_id: this.props.match.params.id,
-      id: this.props.login.id,
-      role_name: this.props.login.rola
+      id: user.user_id,
+      role_name: user.role_name
     }
     console.log('obj :', obj);
     axios({
@@ -86,30 +92,15 @@ export default class EditCompany extends Component {
       url: `https://press-cliping.herokuapp.com/api/keywordDelete?api_key=${api_key}`,
       data: obj
     }).then(response => {
-      this.setState({
-        message: response.data.message
-      })
+      if (response.data.success === true) {
+        this.setState({
+          message: 'Obrisali ste kljucnu rec!'
+        })
+      }
+
       console.log('response :', response);
     }).catch(err => console.log('err ', err));
   }
-  // onDelete = (id) => {
-  //   let c_id = this.props.match.params.id
-  //   let delKeywords = this.state.delKeywords
-  //   let keywords = this.state.keywords
-  //   let deletedKeyword = {};
-  //   deletedKeyword = {
-  //     company_id: c_id,
-  //     keyword_id: id
-  //   }
-  //   delKeywords.push(deletedKeyword)
-  //   const filteredKeywords = keywords.filter(keyword => {
-  //     return keyword.id !== id;
-  //   })
-  //   this.setState({
-  //     keywords: filteredKeywords
-  //   })
-  //   console.log('delKeywords :', this.state);
-  // }
   pushKeyword = () => {
     let keywords = this.state.addedKeywords;
     keywords.push({
@@ -122,18 +113,19 @@ export default class EditCompany extends Component {
 
   editCompany = (editedCompany) => {
     let api_key = 'dada';
-    // let id = this.props.match.params.id;
     axios.request({
       method: 'put',
       url: `https://press-cliping.herokuapp.com/api/companies?api_key=${api_key}`,
       data: editedCompany
     })
-    .then(response => {
-      this.setState({
-        message: response.data.message
-      })
-      console.log('response :', response);
-    }).catch(response => console.log('err ', response));
+      .then(response => {
+        if (response.data.success === true) {
+          this.setState({
+            message: 'Kompanija editovana!'
+          })
+        }
+        console.log('response :', response);
+      }).catch(response => console.log('err ', response));
   }
   edit = () => {
     let editedCompany = {}
@@ -162,31 +154,31 @@ export default class EditCompany extends Component {
       )
     })
     return (
-      <div>
+      <div style={{ padding: '50px' }}>
         <h2>Edituj kompaniju</h2>
-        <span>Ime kompanije:</span>
-        <Input name='name' value={name} onChange={this.handleChange} /><br />
-        <span>Kljucne reci:</span><br />
+        <span style={{ fontSize: '16px' }}>Ime kompanije:</span><br />
+        <Input name='name' value={name} onChange={this.handleChange} /><br /><br />
+        <span style={{ fontSize: '16px' }}>Kljucne reci:</span><br />
         {
           keywords !== undefined ? keywords.map((item, key) => {
             return (
-              <div key={item.id}>
+              <div key={item.id} style={{ padding: '2px 0px' }}>
                 <Input name={item.name} value={item.name}
-                  onChange={(e) => this.handleChangeKeyword(item.id, e)} />
-                <Button onClick={() => this.onDelete(item.id)} content='Delete' />
+                  onChange={(e) => this.handleChangeKeyword(item.id, e)} style={{ minWidth: '100px', paddingRight: '10px' }} />
+                <Button onClick={() => this.onDelete(item.id)} content='Obriši' color='google plus' />
                 <br />
               </div>
             )
           }) : ''
         }
-        <span>Dodaj kljucnu rec:</span>
+        <span style={{ fontSize: '16px', paddingTop: '10px', display: 'inline-block' }}>Dodaj kljucnu rec:</span><br />
         <Input name='keyword' value={this.state.keyword} onChange={this.handleChange} />
         <Button content='+' onClick={this.pushKeyword} />
         {
           words
         }
-        <br />
-        <div>{this.state.message}</div><br />
+        <br /><br />
+        <div style={{ fontSize: '16px' }}>{this.state.message}</div><br />
         <Button color='red' content='Sacuvaj' onClick={this.edit} />
       </div>
     )

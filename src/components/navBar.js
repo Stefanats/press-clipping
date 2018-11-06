@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import Login from './login';
 import Logout from './logout'
 import { Menu } from 'semantic-ui-react';
+import CryptoJS from 'crypto-js'
+import pic from '../images/159.jpg'
+
 
 @connect(state => ({ login: state.login }))
 
@@ -13,10 +16,11 @@ class NavBar extends Component {
 	handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 	componentDidMount() {
 		let session = window.localStorage.getItem('token')
-		let user = window.localStorage.getItem('user')
-		user = JSON.parse(user)
+		let userToken = window.localStorage.getItem('novi token')
+		let bytes = CryptoJS.AES.decrypt(userToken.toString(), 'lgitruybcintun');
+		let user = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
 		!session ? this.setState({ token: true }) : this.setState({ token: false })
-		!session ? this.props.dispatch({ type: "LOGOUT" }) : this.props.dispatch({ type: "LOGIN", user: user.name, rola: user.role_name, id: user.user_id  })
+		!session ? this.props.dispatch({ type: "LOGOUT" }) : this.props.dispatch({ type: "LOGIN", user: user.name, rola: user.role_name, id: user.user_id })
 	}
 	render() {
 		const { activeItem } = this.state
@@ -30,7 +34,7 @@ class NavBar extends Component {
 						onClick={this.handleItemClick}
 					>
 						<Link to='/admin'>
-							Home
+							Početna
 						</Link>
 					</Menu.Item>
 					<Menu.Item
@@ -39,7 +43,7 @@ class NavBar extends Component {
 						onClick={this.handleItemClick}
 					>
 						<Link to='/createCompany'>
-							Create Company
+							Kreiraj kompaniju
 						</Link>
 					</Menu.Item>
 					<Menu.Item
@@ -48,7 +52,7 @@ class NavBar extends Component {
 						onClick={this.handleItemClick}
 					>
 						<Link to='/createUser'>
-							Create User
+							Kreiraj korisnika
 						</Link>
 					</Menu.Item>
 					<Menu.Item
@@ -57,7 +61,7 @@ class NavBar extends Component {
 						onClick={this.handleItemClick}
 					>
 						<Link to='/edit'>
-							Edit
+							Edituj
 						</Link>
 					</Menu.Item>
 					<Menu.Item position='right'>
@@ -68,7 +72,7 @@ class NavBar extends Component {
 						}
 					</Menu.Item>
 				</Menu>
-				<div>
+				<div style={{ background: `url(${pic})`, backgroundPosition: 'cover', minHeight: '100vh' }}>
 					{
 						this.props.children
 					}

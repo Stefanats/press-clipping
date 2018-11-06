@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import DatePicker from './datePickerSection';
 import PressType from './pressType';
-import { Button, GridColumn, TextArea, Grid, GridRow } from 'semantic-ui-react';
+import { Button, GridColumn, TextArea, Grid, GridRow, Loader } from 'semantic-ui-react';
 import PressPublisher from './pressPublisher';
 import axios from 'axios';
-import Article from './Article'
+import CryptoJS from 'crypto-js'
 
 
 @connect(state => ({ proba: state.articleSearch, login: state.login }))
@@ -18,22 +18,29 @@ class ArticlesSearch extends Component {
       date: [],
       clanci: [],
       printedArr: [],
-      digitalArr: []
+      digitalArr: [],
+      clanciDigitalni: [],
+      clanciStampani: [],
+      loader: false,
     }
   }
   componentDidMount() {
     this.getToken()
   }
   getToken = () => {
-    let token = window.localStorage.getItem("user")
-    let tokenParse = JSON.parse(token)
-    let company_id = tokenParse.company_id
+    let userToken = window.localStorage.getItem('novi token')
+    let bytes = CryptoJS.AES.decrypt(userToken.toString(), 'lgitruybcintun');
+    let user = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    let company_id = user.company_id
     this.setState({
       company_id
     })
   }
 
   getArticles(params) {
+    this.setState({
+      loader: true
+    })
     console.log('params :', params);
     let api_key = 'dada';
     axios.request({
@@ -42,19 +49,41 @@ class ArticlesSearch extends Component {
       data: params
     }).then(response => {
       if (Array.isArray(response.data) === true) {
-        console.log('response.niz :', response.data);
-        let arr = []
-        response.data.map((item) => {
-          return arr.push({
-            date: item.date,
-            articles: item.articles
+        if (this.props.proba.pressType === 'stampani') {
+          console.log('response.niz :', response.data);
+          let arrSt = []
+          response.data.map((item) => {
+            return arrSt.push({
+              date: item.date,
+              name: 'Stampani',
+              articles: item.articles
+            })
           })
-        })
-        this.setState({
-          clanci: arr,
-          printedArr: [],
-          digitalArr: []
-        })
+          this.setState({
+            loader: false,
+            printedArr: [],
+            digitalArr: [],
+            clanciDigitalni: [],
+            clanciStampani: arrSt
+          })
+        }
+        if (this.props.proba.pressType === 'elektronski') {
+          let arrDi = []
+          response.data.map((item) => {
+            return arrDi.push({
+              date: item.date,
+              name: 'Elektronski',
+              articles: item.articles
+            })
+          })
+          this.setState({
+            loader: false,
+            clanciStampani: [],
+            printedArr: [],
+            digitalArr: [],
+            clanciDigitalni: arrDi
+          })
+        }
       }
       else {
         console.log('response.obj :', response.data);
@@ -65,21 +94,23 @@ class ArticlesSearch extends Component {
         printed.map((item) => {
           return printedArr.push({
             date: item.date,
-            // name: item.slug,
+            name: 'Stampani',
             arr: item.articles
           })
         })
         digital.map((item) => {
           return digitalArr.push({
             date: item.date,
-            // name: item.slug,
+            name: 'Elektronski',
             arr: item.articles
           })
         })
         this.setState({
+          loader: false,
+          clanciStampani: [],
+          clanciDigitalni: [],
           printedArr: printedArr,
-          digitalArr: digitalArr,
-          clanci: []
+          digitalArr: digitalArr
         })
       }
     }).catch(err => console.log('err ', err));
@@ -100,23 +131,50 @@ class ArticlesSearch extends Component {
   }
 
   render() {
-    // const { articles } = this.state
-    // let articlesArr = articles.map((article) => {
-    //   return (
-    //     <Article text={article.text} link={article.link_src} slug={article.media_slug} time={article.updated_at} />
-    //   )
-    // })
     console.log("IZ REDUXA", this.props.proba)
     console.log('this.state.clanaka :', this.state);
-    let arr = this.state.clanci.map((item) => {
+    let clanciStampani = this.state.clanciStampani.map((item) => {
       return (
         <Grid style={{ marginTop: '50px' }}>
-          <div style={{ textAlign: 'center', margin: '0 auto', fontSize: '20px' }}>{item.date}</div><br />
-          <GridRow>
+          <div style={{ textAlign: 'center', margin: '0 auto', fontSize: '20px' }} onClick={this.showArticles}>{item.name + ' ' + item.date}</div><br />
+          <GridRow centered>
             {
               item.articles.map((article) => {
                 return (
-                  <Article text={article.text} link={article.link_src} slug={article.media_slug} time={article.updated_at} />
+                  <GridColumn computer={4}>
+                    <div style={{ marginTop: '50px' }}>
+                      <a href={article.original_src} style={{ fontSize: '18px' }} target="_blank">Originalni Pdf</a><br />
+                      <a href={article.modified_src} style={{ fontSize: '18px' }} target="_blank">Modifikovani Pdf</a><br />
+                      <a href={article.single_page_src} style={{ fontSize: '18px' }} target="_blank">Izdvojena stranica</a><br />
+                      <div>Izdavac: {article.media_slug}</div>
+                      <div>{article.updated_at}</div>
+                      <TextArea cols="35" name={article.text} value={article.text === null ? '' : article.text} /><br />
+                    </div>
+                  </GridColumn>
+                )
+              })
+            }
+          </GridRow>
+        </Grid>
+      )
+    })
+    let clanciDigitalni = this.state.clanciDigitalni.map((item) => {
+      return (
+        <Grid style={{ marginTop: '50px' }}>
+          <div style={{ textAlign: 'center', margin: '0 auto', fontSize: '20px' }}
+            onClick={this.showArticles}>{item.name + ' ' + item.date}</div><br />
+          <GridRow centered>
+            {
+              item.articles.map((article) => {
+                return (
+                  <GridColumn computer={4}>
+                    <div style={{ marginTop: '50px' }}>
+                      <a href={article.link_src} style={{ fontSize: '18px' }} target="_blank">Link</a>
+                      <div>Izdavac: {article.media_slug}</div>
+                      <div>{article.updated_at}</div>
+                      <TextArea cols="35" name={article.text} value={article.text === null ? '' : article.text} /><br />
+                    </div>
+                  </GridColumn>
                 )
               })
             }
@@ -127,18 +185,18 @@ class ArticlesSearch extends Component {
     let digital = this.state.digitalArr.map((item) => {
       return (
         <Grid textAlign='center' style={{ marginTop: '50px' }}>
-          {/* <div style={{ fontSize: '20px', textAlign: 'center' }}>{item.name}</div> */}
+          <div style={{ fontSize: '20px', textAlign: 'center' }}>{item.name}</div>
           <div style={{ fontSize: '18px', textAlign: 'center' }}>{item.date}</div>
           <GridRow centered>
             {
               item.arr.map((item) => {
                 return (
                   <GridColumn computer={4}>
-                    {/* <Article text={item.text} slug={item.media_slug} /> */}
                     <div style={{ marginTop: '50px' }}>
                       <a href={item.link_src} style={{ fontSize: '18px' }} target="_blank">Link</a>
-                      <div>{item.media_slug}</div>
-                      <div style={{ height: '100px', overflowY: 'scroll', border: '1px solid black' }}>{item.text}</div>
+                      <div>Izdavac: {item.media_slug}</div>
+                      <div>{item.updated_at}</div>
+                      <TextArea cols="35" name={item.text} value={item.text === null ? '' : item.text} /><br />
                     </div>
                   </GridColumn>
                 )
@@ -151,18 +209,20 @@ class ArticlesSearch extends Component {
     let printed = this.state.printedArr.map((item) => {
       return (
         <Grid textAlign='center' style={{ marginTop: '50px' }}>
-          {/* <div style={{ fontSize: '20px', textAlign: 'center' }}>{item.name}</div> */}
+          <div style={{ fontSize: '20px', textAlign: 'center' }}>{item.name}</div>
           <div style={{ fontSize: '18px', textAlign: 'center' }}>{item.date}</div>
           <GridRow centered>
             {
               item.arr.map((item) => {
                 return (
                   <GridColumn computer={4}>
-                    {/* <Article text={item.text} slug={item.media_slug} /> */}
                     <div style={{ marginTop: '50px' }}>
-                      <a href={item.link_src} style={{ fontSize: '18px' }} target="_blank">Link</a>
-                      <div>{item.media_slug}</div>
-                      <div style={{ height: '100px', overflowY: 'scroll', border: '1px solid black' }}>{item.text}</div>
+                      <a href={item.original_src} style={{ fontSize: '18px' }} target="_blank">Originalni Pdf</a><br />
+                      <a href={item.modified_src} style={{ fontSize: '18px' }} target="_blank">Modifikovani Pdf</a><br />
+                      <a href={item.single_page_src} style={{ fontSize: '18px' }} target="_blank">Izdvojena stranica</a><br />
+                      <div>Izdavac: {item.media_slug}</div>
+                      <div>{item.updated_at}</div>
+                      <TextArea cols="35" name={item.text} value={item.text === null ? '' : item.text} /><br />
                     </div>
                   </GridColumn>
                 )
@@ -176,14 +236,21 @@ class ArticlesSearch extends Component {
 
     return (
       <div>
-        <DatePicker text="Od" />
-        <DatePicker text="Do" />
-        <PressType />
-        <PressPublisher />
-        <Button content='Send query' onClick={this.handleSubmit} />
+        <DatePicker text="Od" /><br />
+        <DatePicker text="Do" /><br />
+        <PressType /><br />
+        <PressPublisher /><br />
+        <Button color='facebook' content='Pošalji upit' onClick={this.handleSubmit} />
+        {this.state.loader === true ? <Loader size='large' active inline='centered' /> : null}
+        
         <div>
           {
-            arr
+            clanciStampani
+          }
+        </div>
+        <div>
+          {
+            clanciDigitalni
           }
         </div>
         <div>

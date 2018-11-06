@@ -12,7 +12,7 @@ class User extends React.Component {
     return (
       this.props.login.rola === 'korisnik' ?
       <div style={{padding:"50px"}}>
-      User
+      Korisnik
           <ArticleSearch />
       </div> : 
       this.props.login.rola === 'editor' ? <Redirect to="/editor" /> : 

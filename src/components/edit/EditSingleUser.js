@@ -5,6 +5,7 @@ import EditUserLastName from './editUser/EditUserLastName'
 import EditUserEmail from './editUser/EditUserEmail'
 import { Button, Input, Dropdown } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import CryptoJS from 'crypto-js'
 
 
 let roles = [{
@@ -46,10 +47,13 @@ export default class EditSingleUser extends Component {
   getUser = () => {
     let api_key = 'dada';
     let user_id = this.props.match.params.id;
+    let userToken = window.localStorage.getItem('novi token')
+    let bytes = CryptoJS.AES.decrypt(userToken.toString(), 'lgitruybcintun');
+    let user = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
     let obj = {
       user_id,
-      role_name: this.props.login.rola,
-      id: this.props.login.id
+      role_name: user.role_name,
+      id: user.user_id
     }
     axios({
       method: 'post',
@@ -77,20 +81,31 @@ export default class EditSingleUser extends Component {
       url: `https://press-cliping.herokuapp.com/api/users/${user_id}?api_key=${api_key}`,
       data: editedUser
     }).then(response => {
-      this.setState({
-        message: response.data.message
-      })
+      if (response.data.success === true) {
+        this.setState({
+          message: 'Korisnik editovan!'
+        })
+      }
+
       console.log('response :', response);
     }).catch(response => console.log('err ', response));
   }
   edit = () => {
     let editedUser = {}
-    if (this.state.password !== '' || this.state.email !== this.state.newEmail) {
+    if (this.state.password !== '') {
+      editedUser = {
+        name: this.state.name,
+        last_name: this.state.lastName,
+        password: this.state.password,
+        role_id: this.state.role,
+        role_name: this.props.login.rola,
+        id: this.props.login.id
+      }
+    } if (this.state.email !== this.state.newEmail) {
       editedUser = {
         name: this.state.name,
         last_name: this.state.lastName,
         email: this.state.newEmail,
-        password: this.state.password,
         role_id: this.state.role,
         role_name: this.props.login.rola,
         id: this.props.login.id
@@ -106,25 +121,25 @@ export default class EditSingleUser extends Component {
     }
 
     this.editUser(editedUser)
+    console.log('editedUser :', editedUser);
   }
   render() {
-    // let a = this.props.location.pathname;
-    // var res = a.split("/");
-    // console.log('res :', res[3]);
     console.log('this.state :', this.state);
     return (
-      <div>
-        <span>Ime: </span>
-        <EditUserName name='name' value={this.state.name} handleChange={this.handleChange} /><br />
-        <span>Prezime: </span>
-        <EditUserLastName name='lastName' value={this.state.lastName} handleChange={this.handleChange} /><br />
-        <span>Email: </span>
-        <EditUserEmail name='newEmail' value={this.state.newEmail} handleChange={this.handleChange} /><br />
-        <span>Lozinka: </span>
-        <Input name='password' value={this.state.password} onChange={this.handleChange} /><br />
-        <span>Rola: </span>
-        <Dropdown placeholder={this.state.role} item selection options={roles} onChange={this.handleChangeDropRole} value={this.state.role} /><br />
-        <Button onClick={this.edit} content='Izmeni' />
+      <div style={{ padding: '50px' }}>
+        <h2>Edituj korisnika: </h2>
+        <span style={{ minWidth: '100px', display: 'inline-block' }}>Ime: </span>
+        <EditUserName name='name' value={this.state.name} handleChange={this.handleChange} /><br /><br />
+        <span style={{ minWidth: '100px', display: 'inline-block' }}>Prezime: </span>
+        <EditUserLastName name='lastName' value={this.state.lastName} handleChange={this.handleChange} /><br /><br />
+        <span style={{ minWidth: '100px', display: 'inline-block' }}>Email: </span>
+        <EditUserEmail name='newEmail' value={this.state.newEmail} handleChange={this.handleChange} /><br /><br />
+        <span style={{ minWidth: '100px', display: 'inline-block' }}>Lozinka: </span>
+        <Input name='password' value={this.state.password} onChange={this.handleChange} /><br /><br />
+        <span style={{ minWidth: '100px', display: 'inline-block' }}>Rola: </span>
+        <Dropdown placeholder={this.state.role} item selection options={roles} onChange={this.handleChangeDropRole} value={this.state.role} /><br /><br />
+        <div style={{ fontSize: '16px' }}>{this.state.message}</div>
+        <Button onClick={this.edit} content='Izmeni' color='green' />
       </div>
     )
   }

@@ -8,7 +8,7 @@ import { withRouter } from 'react-router';
 class Logout extends Component {
   logout = () => {
     window.localStorage.removeItem('token')
-    window.localStorage.removeItem('user')
+    window.localStorage.removeItem('novi token')
     this.props.history.push('/')
     this.props.dispatch({ type: "LOGOUT" })
   }
@@ -16,8 +16,8 @@ class Logout extends Component {
     console.log('props iz logout :', this.props);
     return (
       <div>
-        <Button onClick={this.logout} color='red' content='Logout' />
-        <div>Dobrodosli {this.props.login.user}</div>
+        <Button onClick={this.logout} color='red' content='Izloguj se' />
+        <div style={{ marginTop: '10px' }} >Dobrodosli, {this.props.login.user}</div>
       </div>
     )
   }

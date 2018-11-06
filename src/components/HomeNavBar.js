@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import Login from './login';
 import Logout from './logout'
 import { Menu } from 'semantic-ui-react';
+import CryptoJS from 'crypto-js'
+
 
 @connect(state => ({ login: state.login }))
 
@@ -13,10 +15,6 @@ class NavBar extends Component {
 	handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 	componentDidMount() {
 		let session = window.localStorage.getItem('token')
-		let user = window.localStorage.getItem('user')
-		user = JSON.parse(user)
-		!session ? this.setState({ token: true }) : this.setState({ token: false })
-		!session ? this.props.dispatch({ type: "LOGOUT" }) : this.props.dispatch({ type: "LOGIN", user: user.name, rola: user.role_name })
 	}
 	render() {
 		const { activeItem } = this.state
